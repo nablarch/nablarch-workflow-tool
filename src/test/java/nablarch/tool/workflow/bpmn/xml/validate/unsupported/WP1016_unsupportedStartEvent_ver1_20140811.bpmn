@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn2:definitions xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:bpmn2="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xsi:schemaLocation="http://www.omg.org/spec/BPMN/20100524/MODEL BPMN20.xsd" id="_C5AZECEvEeS7W9_e3K81Rg" exporter="camunda modeler" exporterVersion="2.6.0" targetNamespace="http://activiti.org/bpmn">
+  <bpmn2:collaboration id="_Collaboration_4">
+    <bpmn2:participant id="_Participant_4" name="Pool" processRef="Process_1"/>
+  </bpmn2:collaboration>
+  <bpmn2:process id="Process_1" isExecutable="false">
+    <bpmn2:laneSet id="LaneSet_1" name="Lane Set 1">
+      <bpmn2:lane id="laneId1" name="Lane 1">
+        <bpmn2:flowNodeRef>startevent12345678</bpmn2:flowNodeRef>
+        <bpmn2:flowNodeRef>ServiceTask_123456</bpmn2:flowNodeRef>
+        <bpmn2:flowNodeRef>terminateEndEvent1</bpmn2:flowNodeRef>
+      </bpmn2:lane>
+    </bpmn2:laneSet>
+    <bpmn2:startEvent id="startevent12345678" name="StartEvent_name">
+      <bpmn2:outgoing>SequenceFlow_2</bpmn2:outgoing>
+      <bpmn2:signalEventDefinition id="_SignalEventDefinition_2"/>
+    </bpmn2:startEvent>
+    <bpmn2:userTask id="ServiceTask_123456" name="ServiceTask_name">
+      <bpmn2:incoming>SequenceFlow_2</bpmn2:incoming>
+      <bpmn2:outgoing>SequenceFlow_11</bpmn2:outgoing>
+    </bpmn2:userTask>
+    <bpmn2:endEvent id="terminateEndEvent1" name="EndEvent_name">
+      <bpmn2:incoming>SequenceFlow_11</bpmn2:incoming>
+      <bpmn2:terminateEventDefinition id="_TerminateEventDefinition_17"/>
+    </bpmn2:endEvent>
+    <bpmn2:sequenceFlow id="SequenceFlow_2" name="" sourceRef="startevent12345678" targetRef="ServiceTask_123456"/>
+    <bpmn2:sequenceFlow id="SequenceFlow_11" name="" sourceRef="ServiceTask_123456" targetRef="terminateEndEvent1"/>
+  </bpmn2:process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="_Collaboration_4">
+      <bpmndi:BPMNShape id="_BPMNShape_Participant_4" bpmnElement="_Participant_4" isHorizontal="true">
+        <dc:Bounds height="519.0" width="1253.0" x="272.0" y="130.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="_BPMNShape_Lane_4" bpmnElement="laneId1" isHorizontal="true">
+        <dc:Bounds height="519.0" width="1223.0" x="302.0" y="130.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="_BPMNShape_StartEvent_4" bpmnElement="startevent12345678">
+        <dc:Bounds height="36.0" width="36.0" x="354.0" y="250.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="_BPMNShape_UserTask_9" bpmnElement="ServiceTask_123456">
+        <dc:Bounds height="80.0" width="100.0" x="516.0" y="228.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="_BPMNShape_EndEvent_4" bpmnElement="terminateEndEvent1">
+        <dc:Bounds height="36.0" width="36.0" x="1188.0" y="246.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="BPMNEdge_SequenceFlow_2" bpmnElement="SequenceFlow_2" sourceElement="_BPMNShape_StartEvent_4" targetElement="_BPMNShape_UserTask_9">
+        <di:waypoint xsi:type="dc:Point" x="390.0" y="268.0"/>
+        <di:waypoint xsi:type="dc:Point" x="516.0" y="268.0"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="BPMNEdge_SequenceFlow_11" bpmnElement="SequenceFlow_11" sourceElement="_BPMNShape_UserTask_9" targetElement="_BPMNShape_EndEvent_4">
+        <di:waypoint xsi:type="dc:Point" x="616.0" y="268.0"/>
+        <di:waypoint xsi:type="dc:Point" x="902.0" y="268.0"/>
+        <di:waypoint xsi:type="dc:Point" x="902.0" y="264.0"/>
+        <di:waypoint xsi:type="dc:Point" x="1188.0" y="264.0"/>
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn2:definitions>

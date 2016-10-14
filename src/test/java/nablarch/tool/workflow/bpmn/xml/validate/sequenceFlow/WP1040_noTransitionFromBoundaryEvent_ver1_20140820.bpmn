@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn2:definitions xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:bpmn2="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xsi:schemaLocation="http://www.omg.org/spec/BPMN/20100524/MODEL BPMN20.xsd" id="_fP1lACgwEeSAa9Zm_6sirg" exporter="camunda modeler" exporterVersion="2.6.0" targetNamespace="http://activiti.org/bpmn">
+  <bpmn2:collaboration id="_Collaboration_12">
+    <bpmn2:participant id="_Participant_12" name="Pool" processRef="Process_1"/>
+  </bpmn2:collaboration>
+  <bpmn2:process id="Process_1" isExecutable="true">
+    <bpmn2:laneSet id="LaneSet_1" name="Lane Set 1">
+      <bpmn2:lane id="LaneId1" name="Lane 1">
+        <bpmn2:flowNodeRef>usertask1234567890</bpmn2:flowNodeRef>
+        <bpmn2:flowNodeRef>startevent12345678</bpmn2:flowNodeRef>
+        <bpmn2:flowNodeRef>terminateEndEvent1</bpmn2:flowNodeRef>
+        <bpmn2:flowNodeRef>exclusivegateway12</bpmn2:flowNodeRef>
+        <bpmn2:flowNodeRef>boundarymessage123</bpmn2:flowNodeRef>
+      </bpmn2:lane>
+    </bpmn2:laneSet>
+    <bpmn2:userTask id="usertask1234567890" name="usertask1_name">
+      <bpmn2:incoming>SequenceFlow_15</bpmn2:incoming>
+      <bpmn2:outgoing>SequenceFlow_24</bpmn2:outgoing>
+    </bpmn2:userTask>
+    <bpmn2:startEvent id="startevent12345678" name="startevent1_name">
+      <bpmn2:outgoing>SequenceFlow_15</bpmn2:outgoing>
+    </bpmn2:startEvent>
+    <bpmn2:sequenceFlow id="SequenceFlow_15" name="" sourceRef="startevent12345678" targetRef="usertask1234567890"/>
+    <bpmn2:endEvent id="terminateEndEvent1" name="TerminateEndEvent">
+      <bpmn2:incoming>SequenceFlow_25</bpmn2:incoming>
+      <bpmn2:terminateEventDefinition id="_TerminateEventDefinition_13"/>
+    </bpmn2:endEvent>
+    <bpmn2:exclusiveGateway id="exclusivegateway12">
+      <bpmn2:incoming>SequenceFlow_24</bpmn2:incoming>
+      <bpmn2:outgoing>SequenceFlow_25</bpmn2:outgoing>
+    </bpmn2:exclusiveGateway>
+    <bpmn2:sequenceFlow id="SequenceFlow_24" name="" sourceRef="usertask1234567890" targetRef="exclusivegateway12"/>
+    <bpmn2:sequenceFlow id="SequenceFlow_25" name="" sourceRef="exclusivegateway12" targetRef="terminateEndEvent1">
+      <bpmn2:conditionExpression xsi:type="bpmn2:tFormalExpression">eq</bpmn2:conditionExpression>
+    </bpmn2:sequenceFlow>
+    <bpmn2:boundaryEvent id="boundarymessage123" name="boundarymessage_name" attachedToRef="usertask1234567890">
+      <bpmn2:messageEventDefinition id="_MessageEventDefinition_7" messageRef="Message_1"/>
+    </bpmn2:boundaryEvent>
+  </bpmn2:process>
+  <bpmn2:message id="Message_1" name="MSG01"/>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="_Collaboration_12">
+      <bpmndi:BPMNShape id="_BPMNShape_Participant_14" bpmnElement="_Participant_12" isHorizontal="true">
+        <dc:Bounds height="325.0" width="769.0" x="156.0" y="24.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="_BPMNShape_Lane_11" bpmnElement="LaneId1" isHorizontal="true">
+        <dc:Bounds height="325.0" width="739.0" x="186.0" y="24.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="_BPMNShape_EndEvent_14" bpmnElement="terminateEndEvent1">
+        <dc:Bounds height="36.0" width="36.0" x="828.0" y="108.0"/>
+        <bpmndi:BPMNLabel>
+          <dc:Bounds height="22.0" width="118.0" x="787.0" y="149.0"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="_BPMNShape_UserTask_32" bpmnElement="usertask1234567890">
+        <dc:Bounds height="80.0" width="100.0" x="360.0" y="114.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="_BPMNShape_StartEvent_15" bpmnElement="startevent12345678">
+        <dc:Bounds height="36.0" width="36.0" x="243.0" y="119.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="BPMNEdge_SequenceFlow_15" bpmnElement="SequenceFlow_15" sourceElement="_BPMNShape_StartEvent_15" targetElement="_BPMNShape_UserTask_32">
+        <di:waypoint xsi:type="dc:Point" x="279.0" y="137.0"/>
+        <di:waypoint xsi:type="dc:Point" x="319.0" y="137.0"/>
+        <di:waypoint xsi:type="dc:Point" x="319.0" y="154.0"/>
+        <di:waypoint xsi:type="dc:Point" x="360.0" y="154.0"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="_BPMNShape_ExclusiveGateway_8" bpmnElement="exclusivegateway12" isMarkerVisible="true">
+        <dc:Bounds height="50.0" width="50.0" x="554.0" y="128.0"/>
+        <bpmndi:BPMNLabel>
+          <dc:Bounds height="0.0" width="0.0" x="579.0" y="183.0"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="BPMNEdge_SequenceFlow_24" bpmnElement="SequenceFlow_24" sourceElement="_BPMNShape_UserTask_32" targetElement="_BPMNShape_ExclusiveGateway_8">
+        <di:waypoint xsi:type="dc:Point" x="460.0" y="154.0"/>
+        <di:waypoint xsi:type="dc:Point" x="507.0" y="154.0"/>
+        <di:waypoint xsi:type="dc:Point" x="507.0" y="153.0"/>
+        <di:waypoint xsi:type="dc:Point" x="554.0" y="153.0"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="BPMNEdge_SequenceFlow_25" bpmnElement="SequenceFlow_25" sourceElement="_BPMNShape_ExclusiveGateway_8" targetElement="_BPMNShape_EndEvent_14">
+        <di:waypoint xsi:type="dc:Point" x="604.0" y="153.0"/>
+        <di:waypoint xsi:type="dc:Point" x="716.0" y="153.0"/>
+        <di:waypoint xsi:type="dc:Point" x="716.0" y="126.0"/>
+        <di:waypoint xsi:type="dc:Point" x="828.0" y="126.0"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="_BPMNShape_BoundaryEvent_7" bpmnElement="boundarymessage123">
+        <dc:Bounds height="36.0" width="36.0" x="442.0" y="96.0"/>
+      </bpmndi:BPMNShape>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn2:definitions>

@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:activiti="http://activiti.org/bpmn" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:omgdc="http://www.omg.org/spec/DD/20100524/DC" xmlns:omgdi="http://www.omg.org/spec/DD/20100524/DI" typeLanguage="http://www.w3.org/2001/XMLSchema" expressionLanguage="http://www.w3.org/1999/XPath" targetNamespace="http://www.activiti.org/test">
+  <collaboration id="Collaboration">
+    <participant id="pool1" name="Pool" processRef="process_pool1"></participant>
+    <participant id="pool2" name="Pool" processRef="process_pool2"></participant>
+  </collaboration>
+  <process id="process_pool1" name="process_pool1" isExecutable="true">
+    <laneSet id="laneSet_process_pool1">
+      <lane id="laneId1">
+        <flowNodeRef>startevent12345678</flowNodeRef>
+        <flowNodeRef>usertask1234567890</flowNodeRef>
+        <flowNodeRef>terminateendevent1</flowNodeRef>
+      </lane>
+    </laneSet>
+    <startEvent id="startevent12345678" name="Start"></startEvent>
+    <userTask id="usertask1234567890" name="User Task"></userTask>
+    <endEvent id="terminateendevent1" name="TerminateEndEvent">
+      <terminateEventDefinition></terminateEventDefinition>
+    </endEvent>
+    <sequenceFlow id="flow1" name="to User Task" sourceRef="startevent12345678" targetRef="usertask1234567890"></sequenceFlow>
+    <sequenceFlow id="flow2" name="to TerminateEndEvent" sourceRef="usertask1234567890" targetRef="terminateendevent1"></sequenceFlow>
+  </process>
+  <process id="process_pool2" name="process_pool2" isExecutable="true">
+    <laneSet id="laneSet_process_pool2">
+      <lane id="laneId2">
+        <flowNodeRef>startevent23456789</flowNodeRef>
+        <flowNodeRef>usertask2345678901</flowNodeRef>
+        <flowNodeRef>terminateendevent2</flowNodeRef>
+      </lane>
+    </laneSet>
+    <startEvent id="startevent23456789" name="Start"></startEvent>
+    <userTask id="usertask2345678901" name="User Task"></userTask>
+    <endEvent id="terminateendevent2" name="TerminateEndEvent">
+      <terminateEventDefinition></terminateEventDefinition>
+    </endEvent>
+    <sequenceFlow id="flow3" name="to User Task" sourceRef="startevent23456789" targetRef="usertask2345678901"></sequenceFlow>
+    <sequenceFlow id="flow4" name="to TerminateEndEvent" sourceRef="usertask2345678901" targetRef="terminateendevent2"></sequenceFlow>
+  </process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_Collaboration">
+    <bpmndi:BPMNPlane bpmnElement="Collaboration" id="BPMNPlane_Collaboration">
+      <bpmndi:BPMNShape bpmnElement="pool1" id="BPMNShape_pool1">
+        <omgdc:Bounds height="150.0" width="500.0" x="360.0" y="90.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="laneId1" id="BPMNShape_laneId1">
+        <omgdc:Bounds height="150.0" width="480.0" x="380.0" y="90.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="pool2" id="BPMNShape_pool2">
+        <omgdc:Bounds height="150.0" width="500.0" x="370.0" y="330.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="laneId2" id="BPMNShape_laneId2">
+        <omgdc:Bounds height="150.0" width="480.0" x="390.0" y="330.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="startevent12345678" id="BPMNShape_startevent12345678">
+        <omgdc:Bounds height="35.0" width="35.0" x="440.0" y="150.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="usertask1234567890" id="BPMNShape_usertask1234567890">
+        <omgdc:Bounds height="55.0" width="105.0" x="550.0" y="140.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="terminateendevent1" id="BPMNShape_terminateendevent1">
+        <omgdc:Bounds height="35.0" width="35.0" x="750.0" y="150.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="startevent23456789" id="BPMNShape_startevent23456789">
+        <omgdc:Bounds height="35.0" width="35.0" x="460.0" y="400.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="usertask2345678901" id="BPMNShape_usertask2345678901">
+        <omgdc:Bounds height="55.0" width="105.0" x="580.0" y="400.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="terminateendevent2" id="BPMNShape_terminateendevent2">
+        <omgdc:Bounds height="35.0" width="35.0" x="760.0" y="410.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge bpmnElement="flow1" id="BPMNEdge_flow1">
+        <omgdi:waypoint x="475.0" y="167.0"></omgdi:waypoint>
+        <omgdi:waypoint x="550.0" y="167.0"></omgdi:waypoint>
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds height="14.0" width="100.0" x="485.0" y="167.0"></omgdc:Bounds>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow2" id="BPMNEdge_flow2">
+        <omgdi:waypoint x="655.0" y="167.0"></omgdi:waypoint>
+        <omgdi:waypoint x="750.0" y="167.0"></omgdi:waypoint>
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds height="42.0" width="100.0" x="665.0" y="167.0"></omgdc:Bounds>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow3" id="BPMNEdge_flow3">
+        <omgdi:waypoint x="495.0" y="417.0"></omgdi:waypoint>
+        <omgdi:waypoint x="580.0" y="427.0"></omgdi:waypoint>
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds height="14.0" width="100.0" x="505.0" y="417.0"></omgdc:Bounds>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow4" id="BPMNEdge_flow4">
+        <omgdi:waypoint x="685.0" y="427.0"></omgdi:waypoint>
+        <omgdi:waypoint x="760.0" y="427.0"></omgdi:waypoint>
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds height="42.0" width="100.0" x="695.0" y="427.0"></omgdc:Bounds>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</definitions>

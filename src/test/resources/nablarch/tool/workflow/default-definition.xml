@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<component-configuration xmlns="http://tis.co.jp/nablarch/component-configuration"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://tis.co.jp/nablarch/component-configuration">
+
+  <component name="workflowDefinitionSchema" class="nablarch.integration.workflow.definition.loader.WorkflowDefinitionSchema">
+    <property name="workflowDefinitionTableName" value="WF_WORKFLOW_DEFINITION" />
+    <property name="laneTableName" value="WF_LANE" />
+    <property name="flowNodeTableName" value="WF_FLOW_NODE" />
+    <property name="eventTableName" value="WF_EVENT" />
+    <property name="taskTableName" value="WF_TASK" />
+    <property name="gatewayTableName" value="WF_GATEWAY" />
+    <property name="boundaryEventTableName" value="WF_BOUNDARY_EVENT" />
+    <property name="eventTriggerTableName" value="WF_BOUNDARY_EVENT_TRIGGER" />
+    <property name="sequenceFlowTableName" value="WF_SEQUENCE_FLOW" />
+
+    <property name="workflowIdColumnName" value="WORKFLOW_ID" />
+    <property name="workflowNameColumnName" value="WORKFLOW_NAME" />
+    <property name="versionColumnName" value="DEF_VERSION" />
+    <property name="effectiveDateColumnName" value="EFFECTIVE_DATE" />
+
+    <property name="laneIdColumnName" value="LANE_ID" />
+    <property name="laneNameColumnName" value="LANE_NAME" />
+
+    <property name="flowNodeIdColumnName" value="FLOW_NODE_ID" />
+    <property name="flowNodeNameColumnName" value="FLOW_NODE_NAME" />
+
+    <property name="eventTypeColumnName" value="EVENT_TYPE" />
+    <property name="multiInstanceTypeColumnName" value="MULTI_INSTANCE_TYPE" />
+    <property name="completionConditionColumnName" value="COMPLETION_CONDITION" />
+    <property name="gatewayTypeColumnName" value="GATEWAY_TYPE" />
+
+    <property name="boundaryEventTriggerIdColumnName" value="BOUNDARY_EVENT_TRIGGER_ID" />
+    <property name="boundaryEventTriggerNameColumnName" value="BOUNDARY_EVENT_TRIGGER_NAME" />
+    <property name="attachedTaskIdColumnName" value="ATTACHED_TASK_ID" />
+
+    <property name="sequenceFlowIdColumnName" value="SEQUENCE_FLOW_ID" />
+    <property name="sequenceFlowNameColumnName" value="SEQUENCE_FLOW_NAME" />
+    <property name="sourceFlowNodeIdColumnName" value="SOURCE_FLOW_NODE_ID" />
+    <property name="targetFlowNodeIdColumnName" value="TARGET_FLOW_NODE_ID" />
+    <property name="flowProceedConditionColumnName" value="FLOW_PROCEED_CONDITION" />
+  </component>
+</component-configuration>
