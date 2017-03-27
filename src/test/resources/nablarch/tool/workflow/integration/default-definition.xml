@@ -4,7 +4,7 @@
                          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
                          xsi:schemaLocation="http://tis.co.jp/nablarch/component-configuration">
 
-    <import file="classpath:nablarch/tool/workflow/integration/db-default.xml"/>
+    <import file="classpath:nablarch/tool/workflow/integration/db.xml"/>
 
     <component name="workflowConfig" class="nablarch.integration.workflow.WorkflowConfig">
         <property name="workflowDefinitionHolder" ref="workflowDefinitionHolder"/>

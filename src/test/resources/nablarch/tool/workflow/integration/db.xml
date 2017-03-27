@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<component-configuration xmlns="http://tis.co.jp/nablarch/component-configuration"
+                         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                         xsi:schemaLocation="http://tis.co.jp/nablarch/component-configuration ../../main/resources/component-configuration.xsd">
+    <!-- db接続情報設定ファイル -->
+    <config-file file="db.config"/>
+    <import file="db-default.xml"/>
+
+    <!--  SimpleDbTransactionManager  -->
+    <component name="testFwTran" class="nablarch.core.db.transaction.SimpleDbTransactionManager">
+        <property name="dbTransactionName" value="test"/>
+        <property name="connectionFactory" ref="connectionFactory"/>
+        <property name="transactionFactory" ref="jdbcTransactionFactory"/>
+    </component>
+
+    <!-- dbInfo -->
+    <component name="dbInfo" class="nablarch.test.core.db.GenericJdbcDbInfo">
+        <property name="dataSource" ref="dataSource"/>
+        <property name="schema" value="${nablarch.db.schema}"/>
+    </component>
+
+    <!-- データベースアクセス例外用の設定 -->
+    <component name="dbExceptionFactory"
+               class="nablarch.core.db.statement.exception.BasicSqlStatementExceptionFactory" />
+</component-configuration>

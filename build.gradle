@@ -54,9 +54,6 @@ dependencies {
   testCompile 'junit:junit:4.12'
   testCompile 'org.hamcrest:hamcrest-all:1.3'
   testCompile 'com.nablarch.tool:nablarch-toolbox'
-  
-  testRuntime 'com.oracle:ucp:11.2.0.3.0'
-  testRuntime 'com.oracle:ojdbc6:11.2.0.2.0'
 }
 
 task wrapper(type: Wrapper) {
