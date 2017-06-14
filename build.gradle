@@ -41,7 +41,7 @@ test {
 
 dependencyManagement {
   imports {
-    mavenBom 'com.nablarch.profile:nablarch-bom:5u9'
+    mavenBom 'com.nablarch.profile:nablarch-bom:5u10'
   }
   applyMavenExclusions false
 }
