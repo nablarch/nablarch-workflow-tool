@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" id="Definitions_1" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="1.8.2">
+  <bpmn:collaboration id="Collaboration_0igy3by">
+    <bpmn:participant id="Participant_0ngmtxg" processRef="Process_1" />
+  </bpmn:collaboration>
+  <bpmn:process id="Process_1" isExecutable="false">
+    <bpmn:laneSet>
+      <bpmn:lane id="Lane_1q434tt">
+        <bpmn:flowNodeRef>EndEvent_0bp5gjl</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>start</bpmn:flowNodeRef>
+      </bpmn:lane>
+    </bpmn:laneSet>
+    <bpmn:endEvent id="EndEvent_0bp5gjl">
+      <bpmn:incoming>SequenceFlow_09y0wpt</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="SequenceFlow_09y0wpt" sourceRef="start" targetRef="EndEvent_0bp5gjl" />
+    <bpmn:startEvent id="start" name="サポートされない開始イベント">
+      <bpmn:outgoing>SequenceFlow_09y0wpt</bpmn:outgoing>
+      <bpmn:signalEventDefinition />
+    </bpmn:startEvent>
+  </bpmn:process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="Collaboration_0igy3by">
+      <bpmndi:BPMNShape id="Participant_0ngmtxg_di" bpmnElement="Participant_0ngmtxg">
+        <dc:Bounds x="127" y="1" width="600" height="370" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="EndEvent_0bp5gjl_di" bpmnElement="EndEvent_0bp5gjl">
+        <dc:Bounds x="355" y="204" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="373" y="244" width="0" height="12" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="SequenceFlow_09y0wpt_di" bpmnElement="SequenceFlow_09y0wpt">
+        <di:waypoint xsi:type="dc:Point" x="257" y="222" />
+        <di:waypoint xsi:type="dc:Point" x="355" y="222" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="306" y="201" width="0" height="12" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="Lane_1q434tt_di" bpmnElement="Lane_1q434tt">
+        <dc:Bounds x="157" y="1" width="570" height="370" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="StartEvent_1x7a5au_di" bpmnElement="start">
+        <dc:Bounds x="221" y="204" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="201" y="244" width="77" height="24" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>

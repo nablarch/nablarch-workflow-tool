@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="MS932" standalone="yes"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:tns="http://bpmn.io/schema/bpmn" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:yaoqiang="http://bpmn.sourceforge.net" exporter="Camunda Modeler" exporterVersion="1.8.2" expressionLanguage="http://www.w3.org/1999/XPath" id="Definitions_1" name="" targetNamespace="http://bpmn.io/schema/bpmn" typeLanguage="http://www.w3.org/2001/XMLSchema" xsi:schemaLocation="http://www.omg.org/spec/BPMN/20100524/MODEL http://bpmn.sourceforge.net/schemas/BPMN20.xsd">
+  <bpmn:collaboration id="Collaboration_122sdb0" isClosed="false">
+    <bpmn:extensionElements>
+      <yaoqiang:description/>
+      <yaoqiang:pageFormat height="841.8897637795276" imageableHeight="831.8897637795276" imageableWidth="588.1102362204724" imageableX="5.0" imageableY="5.0" orientation="0" width="598.1102362204724"/>
+      <yaoqiang:page background="#FFFFFF" horizontalCount="1" verticalCount="1"/>
+    </bpmn:extensionElements>
+    <bpmn:participant id="Participant_1nqs294" processRef="Process_1">
+      <bpmn:participantMultiplicity maximum="1" minimum="0"/>
+    </bpmn:participant>
+    <bpmn:participant id="Participant_02n6086" processRef="Process_055h5ic">
+      <bpmn:participantMultiplicity maximum="1" minimum="0"/>
+    </bpmn:participant>
+  </bpmn:collaboration>
+  <bpmn:process id="Process_1" isClosed="false" isExecutable="false" processType="None"/>
+  <bpmn:process id="Process_055h5ic" isClosed="false" isExecutable="false" processType="None"/>
+  <bpmndi:BPMNDiagram id="Yaoqiang_Diagram-Collaboration_122sdb0" name="Untitled Diagram" resolution="96.0">
+    <bpmndi:BPMNPlane bpmnElement="Collaboration_122sdb0">
+      <bpmndi:BPMNShape bpmnElement="Participant_1nqs294" id="Yaoqiang-Participant_1nqs294" isExpanded="true" isHorizontal="true">
+        <dc:Bounds height="250.0" width="600.0" x="123.0" y="38.0"/>
+        <bpmndi:BPMNLabel>
+          <dc:Bounds height="6.0" width="23.61" x="128.7" y="160.0"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="Participant_02n6086" id="Yaoqiang-Participant_02n6086" isExpanded="true" isHorizontal="true">
+        <dc:Bounds height="250.0" width="600.0" x="122.90086493679308" y="302.9394544244843"/>
+        <bpmndi:BPMNLabel>
+          <dc:Bounds height="6.0" width="23.61" x="128.6" y="424.94"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>

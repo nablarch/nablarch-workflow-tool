@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" id="Definitions_1" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="1.8.2">
+  <bpmn:collaboration id="Collaboration_0i99jp6">
+    <bpmn:participant id="Participant_0054ucy" processRef="Process_1" />
+  </bpmn:collaboration>
+  <bpmn:process id="Process_1" isExecutable="false">
+    <bpmn:laneSet>
+      <bpmn:lane id="Lane_1r7hc8n">
+        <bpmn:flowNodeRef>StartEvent_0eukqig</bpmn:flowNodeRef>
+      </bpmn:lane>
+    </bpmn:laneSet>
+    <bpmn:startEvent id="StartEvent_0eukqig" />
+  </bpmn:process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="Collaboration_0i99jp6">
+      <bpmndi:BPMNShape id="Participant_0054ucy_di" bpmnElement="Participant_0054ucy">
+        <dc:Bounds x="123" y="-158" width="600" height="490" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Lane_1r7hc8n_di" bpmnElement="Lane_1r7hc8n">
+        <dc:Bounds x="153" y="-158" width="570" height="490" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="StartEvent_0eukqig_di" bpmnElement="StartEvent_0eukqig">
+        <dc:Bounds x="248.926" y="16.406999999999982" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="266.926" y="56.40699999999998" width="0" height="12" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>

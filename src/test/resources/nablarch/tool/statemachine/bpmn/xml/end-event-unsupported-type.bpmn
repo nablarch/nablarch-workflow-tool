@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:tns="http://bpmn.io/schema/bpmn" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:yaoqiang="http://bpmn.sourceforge.net" id="Definitions_1" name="" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="1.8.2" xsi:schemaLocation="http://www.omg.org/spec/BPMN/20100524/MODEL http://bpmn.sourceforge.net/schemas/BPMN20.xsd">
+  <bpmn:collaboration id="Collaboration_01m46wh" isClosed="false">
+    <bpmn:extensionElements>
+      <yaoqiang:description />
+      <yaoqiang:pageFormat height="841.8897637795276" imageableHeight="831.8897637795276" imageableWidth="588.1102362204724" imageableX="5.0" imageableY="5.0" orientation="0" width="598.1102362204724" />
+      <yaoqiang:page background="#FFFFFF" horizontalCount="1" verticalCount="1" />
+    </bpmn:extensionElements>
+    <bpmn:participant id="Participant_0kt1flv" processRef="Process_1">
+      <bpmn:participantMultiplicity />
+    </bpmn:participant>
+  </bpmn:collaboration>
+  <bpmn:process id="Process_1" processType="None" isClosed="false" isExecutable="false">
+    <bpmn:laneSet>
+      <bpmn:lane id="Lane_0ag9gpw">
+        <bpmn:flowNodeRef>StartEvent_0ttt993</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>end</bpmn:flowNodeRef>
+      </bpmn:lane>
+    </bpmn:laneSet>
+    <bpmn:startEvent id="StartEvent_0ttt993">
+      <bpmn:outgoing>SequenceFlow_1gz952z</bpmn:outgoing>
+      <bpmn:outputSet />
+    </bpmn:startEvent>
+    <bpmn:endEvent id="end" name="サポートされない停止イベント">
+      <bpmn:incoming>SequenceFlow_1gz952z</bpmn:incoming>
+      <bpmn:inputSet />
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="SequenceFlow_1gz952z" sourceRef="StartEvent_0ttt993" targetRef="end" />
+  </bpmn:process>
+  <bpmndi:BPMNDiagram id="Yaoqiang_Diagram-Collaboration_01m46wh" name="Untitled Diagram" resolution="96">
+    <bpmndi:BPMNPlane bpmnElement="Collaboration_01m46wh">
+      <bpmndi:BPMNShape id="Yaoqiang-Participant_0kt1flv" bpmnElement="Participant_0kt1flv" isHorizontal="true" isExpanded="true">
+        <dc:Bounds x="123" y="-38" width="600" height="370" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="128.7" y="144" width="23.61" height="6" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Yaoqiang-Lane_0ag9gpw" bpmnElement="Lane_0ag9gpw" isHorizontal="true" isExpanded="true">
+        <dc:Bounds x="153" y="-38" width="570" height="370" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="158.7" y="144" width="23.61" height="6" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Yaoqiang-StartEvent_0ttt993" bpmnElement="StartEvent_0ttt993">
+        <dc:Bounds x="251.58354430379745" y="43.13544303797471" width="32" height="32" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="266.58" y="82.7" width="6" height="19.84" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Yaoqiang-end" bpmnElement="end">
+        <dc:Bounds x="504" y="43" width="32" height="32" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="484" y="84" width="77" height="24" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="SequenceFlow_1gz952z_di" bpmnElement="SequenceFlow_1gz952z">
+        <di:waypoint xsi:type="dc:Point" x="284" y="59" />
+        <di:waypoint xsi:type="dc:Point" x="504" y="59" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="394" y="38" width="0" height="12" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>
