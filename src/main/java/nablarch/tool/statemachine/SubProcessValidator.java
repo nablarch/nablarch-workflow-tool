@@ -55,7 +55,8 @@ public class SubProcessValidator implements Validator {
                 new EndEventValidatorInSubProcess(subProcess, getEndEvent()),
                 new TaskValidatorInSubProcess(subProcess, getTask(), getBoundaryEvent()),
                 new BoundaryEventValidator(getBoundaryEvent()),
-                new GatewayValidator(getGateway())
+                new GatewayValidator(getGateway()),
+                FlowElementValidator.create(subProcess)
         );
     }
 

@@ -51,7 +51,9 @@ public class ParentProcessValidator implements Validator {
                 new EndEventValidator(getEndEvent()),
                 new TaskValidator(getTask(), getBoundaryEvent()),
                 new BoundaryEventValidator(getBoundaryEvent()),
-                new GatewayValidator(getGateway()));
+                new GatewayValidator(getGateway()),
+                FlowElementValidator.create(process)
+        );
     }
 
     /**
@@ -137,4 +139,5 @@ public class ParentProcessValidator implements Validator {
         }
         return gateways;
     }
+    
 }

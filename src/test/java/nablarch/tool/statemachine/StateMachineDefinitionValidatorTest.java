@@ -1,5 +1,6 @@
 package nablarch.tool.statemachine;
 
+import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
 
 import java.io.InputStream;
@@ -9,6 +10,8 @@ import javax.xml.bind.JAXB;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
+
+import org.hamcrest.beans.HasPropertyWithValue;
 import org.omg.spec.bpmn._20100524.model.TDefinitions;
 
 /**
@@ -366,6 +369,24 @@ public class StateMachineDefinitionValidatorTest {
         final TDefinitions definitions = loadBPMN("nablarch/tool/statemachine/bpmn/xml/end-event-incoming-notfound.bpmn");
         expectedException.expect(InvalidStateMachineModelException.class);
         expectedException.expectMessage("停止イベントに遷移元が設定されていません。 id:end, name:遷移元がない停止イベント");
+        sut.validate(definitions);
+    }
+
+    @Test
+    public void 利用出来ない要素が置かれていた場合例外が送出されること() throws Exception {
+        final TDefinitions definitions = loadBPMN("nablarch/tool/statemachine/bpmn/xml/invalid-flow-node.bpmn");
+        expectedException.expect(InvalidStateMachineModelException.class);
+        expectedException.expectMessage("サポート対象外の要素が設定されています。 id:invalid, name:サポートされない要素");
+        expectedException.expect(HasPropertyWithValue.hasProperty("messages", hasSize(1)));
+        sut.validate(definitions);
+    }
+    
+    @Test
+    public void サブプロセスに利用出来ない要素が置かれていた場合例外が送出されること() throws Exception {
+        final TDefinitions definitions = loadBPMN("nablarch/tool/statemachine/bpmn/xml/subprocess-invalid-flow-node.bpmn");
+        expectedException.expect(InvalidStateMachineModelException.class);
+        expectedException.expectMessage("サポート対象外の要素が設定されています。 id:invalid, name:サポートされない要素");
+        expectedException.expect(HasPropertyWithValue.hasProperty("messages", hasSize(1)));
         sut.validate(definitions);
     }
 

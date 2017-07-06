@@ -26,6 +26,8 @@ public class ValidateContext {
      * @throws InvalidStateMachineModelException 全てのエラーメッセージを保持する例外
      */
     public void throwError() throws InvalidStateMachineModelException {
-        throw new InvalidStateMachineModelException(messages);
+        if (!messages.isEmpty()) {
+            throw new InvalidStateMachineModelException(messages);
+        }
     }
 }
