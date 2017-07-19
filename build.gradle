@@ -49,6 +49,7 @@ dependencyManagement {
 dependencies {
   compile 'com.nablarch.workflow:nablarch-workflow:1.1.0'
   compile 'com.nablarch.framework:nablarch-core-repository'
+  compile 'com.nablarch.framework:nablarch-common-databind'
   compile 'org.apache.poi:poi-ooxml:3.8'
   
   testCompile 'junit:junit:4.12'

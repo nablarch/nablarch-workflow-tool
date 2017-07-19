@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" id="Definitions_1" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="1.8.2">
+  <bpmn:collaboration id="Collaboration_1odw840">
+    <bpmn:participant id="pool" name="プール" processRef="Process_07a8yku" />
+  </bpmn:collaboration>
+  <bpmn:process id="Process_07a8yku" isExecutable="false">
+    <bpmn:laneSet>
+      <bpmn:lane id="L1" name="レーン">
+        <bpmn:flowNodeRef>start</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>task</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>end</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>boundary</bpmn:flowNodeRef>
+      </bpmn:lane>
+    </bpmn:laneSet>
+    <bpmn:startEvent id="start" name="開始イベント">
+      <bpmn:outgoing>start_seq</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:task id="task" name="タスク">
+      <bpmn:incoming>start_seq</bpmn:incoming>
+    </bpmn:task>
+    <bpmn:sequenceFlow id="boundary_seq" name="境界イベントのシーケンスフロー" sourceRef="boundary" targetRef="end" />
+    <bpmn:boundaryEvent id="boundary" name="境界イベント" attachedToRef="task">
+      <bpmn:outgoing>boundary_seq</bpmn:outgoing>
+      <bpmn:messageEventDefinition messageRef="M01" />
+    </bpmn:boundaryEvent>
+    <bpmn:sequenceFlow id="start_seq" name="開始イベントのシーケンスフロー" sourceRef="start" targetRef="task" />
+    <bpmn:endEvent id="end" name="停止イベント">
+      <bpmn:incoming>boundary_seq</bpmn:incoming>
+      <bpmn:terminateEventDefinition />
+    </bpmn:endEvent>
+  </bpmn:process>
+  <bpmn:message id="M01" name="メッセージ" />
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="Collaboration_1odw840">
+      <bpmndi:BPMNShape id="Participant_03w43wj_di" bpmnElement="pool">
+        <dc:Bounds x="88" y="-58" width="426" height="166" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Lane_0up987u_di" bpmnElement="L1">
+        <dc:Bounds x="118" y="-58" width="396" height="166" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="StartEvent_1woz29m_di" bpmnElement="start">
+        <dc:Bounds x="157.49302915082387" y="4.259822560202792" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="142" y="44" width="66" height="12" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Task_19l90os_di" bpmnElement="task">
+        <dc:Bounds x="252.49302915082387" y="-18" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="EndEvent_0u77llb_di" bpmnElement="end">
+        <dc:Bounds x="436" y="4" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="420" y="44" width="66" height="12" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="SequenceFlow_01bbkmr_di" bpmnElement="boundary_seq">
+        <di:waypoint xsi:type="dc:Point" x="370" y="21" />
+        <di:waypoint xsi:type="dc:Point" x="436" y="22" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="357" y="-24" width="88" height="24" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="BoundaryEvent_0h41diq_di" bpmnElement="boundary">
+        <dc:Bounds x="334" y="4" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="318" y="43" width="66" height="12" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="SequenceFlow_0xo9uz5_di" bpmnElement="start_seq">
+        <di:waypoint xsi:type="dc:Point" x="194" y="22" />
+        <di:waypoint xsi:type="dc:Point" x="252" y="22" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="180" y="1" width="88" height="24" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>

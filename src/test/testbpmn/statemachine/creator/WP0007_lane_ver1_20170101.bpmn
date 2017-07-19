@@ -1,0 +1,155 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" id="Definitions_1" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="1.8.2">
+  <bpmn:collaboration id="Collaboration_1odw840">
+    <bpmn:participant id="pool" name="プール" processRef="Process_07a8yku" />
+  </bpmn:collaboration>
+  <bpmn:process id="Process_07a8yku" isExecutable="false">
+    <bpmn:laneSet>
+      <bpmn:lane id="L1" name="レーン１">
+        <bpmn:flowNodeRef>start</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>task1</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>gateway</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>boundary1</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>end1</bpmn:flowNodeRef>
+      </bpmn:lane>
+      <bpmn:lane id="L2" name="レーン２">
+        <bpmn:flowNodeRef>task2</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>end2</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>boundary2</bpmn:flowNodeRef>
+      </bpmn:lane>
+    </bpmn:laneSet>
+    <bpmn:startEvent id="start" name="開始イベント">
+      <bpmn:outgoing>start_seq</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:task id="task1" name="タスク１">
+      <bpmn:incoming>start_seq</bpmn:incoming>
+    </bpmn:task>
+    <bpmn:sequenceFlow id="boundary1_seq" name="境界イベント１のシーケンスフロー" sourceRef="boundary1" targetRef="gateway" />
+    <bpmn:boundaryEvent id="boundary1" name="境界イベント１" attachedToRef="task1">
+      <bpmn:outgoing>boundary1_seq</bpmn:outgoing>
+      <bpmn:messageEventDefinition messageRef="M01" />
+    </bpmn:boundaryEvent>
+    <bpmn:sequenceFlow id="start_seq" name="開始イベントのシーケンスフロー" sourceRef="start" targetRef="task1" />
+    <bpmn:exclusiveGateway id="gateway" name="ゲートウェイ">
+      <bpmn:incoming>boundary1_seq</bpmn:incoming>
+      <bpmn:outgoing>gateway_end1_seq</bpmn:outgoing>
+      <bpmn:outgoing>gateway_task2_seq</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:sequenceFlow id="gateway_end1_seq" name="ゲートウェイから停止イベント１へのシーケンスフロー" sourceRef="gateway" targetRef="end1">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">eq(condition, 1)</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:task id="task2" name="タスク２">
+      <bpmn:incoming>gateway_task2_seq</bpmn:incoming>
+    </bpmn:task>
+    <bpmn:sequenceFlow id="gateway_task2_seq" name="ゲートウェイからタスク２へのシーケンスフロー" sourceRef="gateway" targetRef="task2">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">eq(condition, 2)</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:endEvent id="end1" name="停止イベント１">
+      <bpmn:incoming>gateway_end1_seq</bpmn:incoming>
+      <bpmn:terminateEventDefinition />
+    </bpmn:endEvent>
+    <bpmn:endEvent id="end2" name="停止イベント２">
+      <bpmn:incoming>boundary2_seq</bpmn:incoming>
+      <bpmn:terminateEventDefinition />
+    </bpmn:endEvent>
+    <bpmn:boundaryEvent id="boundary2" name="境界イベント２" attachedToRef="task2">
+      <bpmn:outgoing>boundary2_seq</bpmn:outgoing>
+      <bpmn:messageEventDefinition messageRef="M02" />
+    </bpmn:boundaryEvent>
+    <bpmn:sequenceFlow id="boundary2_seq" name="境界イベント２のシーケンスフロー" sourceRef="boundary2" targetRef="end2" />
+  </bpmn:process>
+  <bpmn:message id="M01" name="メッセージ１" />
+  <bpmn:message id="M02" name="メッセージ２" />
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="Collaboration_1odw840">
+      <bpmndi:BPMNShape id="Participant_03w43wj_di" bpmnElement="pool">
+        <dc:Bounds x="88" y="-58" width="568" height="302" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="StartEvent_1woz29m_di" bpmnElement="start">
+        <dc:Bounds x="157.49302915082387" y="4.259822560202792" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="142" y="44" width="66" height="12" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Task_19l90os_di" bpmnElement="task1">
+        <dc:Bounds x="252.49302915082387" y="-18" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="EndEvent_0u77llb_di" bpmnElement="end1">
+        <dc:Bounds x="594" y="4" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="573" y="44" width="77" height="12" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="SequenceFlow_01bbkmr_di" bpmnElement="boundary1_seq">
+        <di:waypoint xsi:type="dc:Point" x="370" y="21" />
+        <di:waypoint xsi:type="dc:Point" x="416" y="21" />
+        <di:waypoint xsi:type="dc:Point" x="416" y="22" />
+        <di:waypoint xsi:type="dc:Point" x="458" y="22" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="400" y="1" width="77" height="36" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="BoundaryEvent_0h41diq_di" bpmnElement="boundary1">
+        <dc:Bounds x="334" y="4" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="313" y="43" width="77" height="12" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="SequenceFlow_0xo9uz5_di" bpmnElement="start_seq">
+        <di:waypoint xsi:type="dc:Point" x="194" y="22" />
+        <di:waypoint xsi:type="dc:Point" x="252" y="22" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="180" y="1" width="88" height="24" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="ExclusiveGateway_11pvpod_di" bpmnElement="gateway" isMarkerVisible="true">
+        <dc:Bounds x="460.1621621621622" y="-2.980574324324323" width="50" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="452" y="51" width="66" height="12" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="SequenceFlow_0a3cbz6_di" bpmnElement="gateway_end1_seq">
+        <di:waypoint xsi:type="dc:Point" x="510" y="22" />
+        <di:waypoint xsi:type="dc:Point" x="594" y="22" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="510" y="-37" width="88" height="48" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="Lane_1sxc483_di" bpmnElement="L1">
+        <dc:Bounds x="118" y="-58" width="538" height="165" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Lane_0sg36am_di" bpmnElement="L2">
+        <dc:Bounds x="118" y="107" width="538" height="137" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Task_1v5o33v_di" bpmnElement="task2">
+        <dc:Bounds x="435" y="138" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="SequenceFlow_0n3c1d2_di" bpmnElement="gateway_task2_seq">
+        <di:waypoint xsi:type="dc:Point" x="485" y="47" />
+        <di:waypoint xsi:type="dc:Point" x="485" y="138" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="458" y="87" width="88" height="36" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="EndEvent_150buh0_di" bpmnElement="end2">
+        <dc:Bounds x="594" y="160" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="574" y="200" width="77" height="12" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BoundaryEvent_1eccsnf_di" bpmnElement="boundary2">
+        <dc:Bounds x="517" y="160" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="497" y="200" width="77" height="12" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="SequenceFlow_1gvk6w2_di" bpmnElement="boundary2_seq">
+        <di:waypoint xsi:type="dc:Point" x="553" y="178" />
+        <di:waypoint xsi:type="dc:Point" x="594" y="178" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="536" y="157" width="77" height="36" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>

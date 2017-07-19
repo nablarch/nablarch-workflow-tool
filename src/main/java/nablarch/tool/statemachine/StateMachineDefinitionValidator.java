@@ -1,10 +1,15 @@
 package nablarch.tool.statemachine;
 
-import org.omg.spec.bpmn._20100524.model.*;
-
-import javax.xml.bind.JAXBElement;
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+import javax.xml.bind.JAXB;
+import javax.xml.bind.JAXBElement;
+
+import nablarch.tool.workflow.WorkflowDefinitionFile;
+import org.omg.spec.bpmn._20100524.model.TDefinitions;
+import org.omg.spec.bpmn._20100524.model.TProcess;
+import org.omg.spec.bpmn._20100524.model.TRootElement;
 
 /**
  * ステートマシン定義のバリデーションを行う。
@@ -15,11 +20,12 @@ public class StateMachineDefinitionValidator {
 
     /**
      * 指定されたステートマシン定義をバリデーションする。
-     * @param definitions ステートマシン定義
+     * @param workflowDefinitionFile ワークフロー定義ファイル
      * @throws InvalidStateMachineModelException 不正なステートマシン定義の場合
      */
-    public void validate(final TDefinitions definitions) throws InvalidStateMachineModelException {
-        List<TProcess> processes = getProcesses(definitions);
+    public void validate(final WorkflowDefinitionFile workflowDefinitionFile) throws InvalidStateMachineModelException {
+        final TDefinitions definitions = JAXB.unmarshal(new File(workflowDefinitionFile.getPath()), TDefinitions.class);
+        final List<TProcess> processes = getProcesses(definitions);
         if (processes.size() != 1) {
             throw new InvalidStateMachineModelException(MessageUtil.getMessage("invalid.pool.count"));
         }
