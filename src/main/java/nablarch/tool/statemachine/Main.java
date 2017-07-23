@@ -37,6 +37,15 @@ public class Main {
      * @param args [0]:BPMNファイルの配置フォルダ [1]:CSVファイルの出力先フォルダ [2]:コンポーネント定義ファイルパス
      */
     public static void main(final String... args) {
+
+        if (args.length != 3) {
+            System.err.println("パラメータ数が不正です。本ツールの実行時には以下のパラメータを指定する必要があります。");
+            System.err.println("第一引数：BPMNファイルの配置フォルダ");
+            System.err.println("第二引数：CSVファイルの出力先フォルダ");
+            System.err.println("第三引数：コンポーネント定義ファイルパス");
+            return;
+        }
+
         final File inputDir = new File(args[0]);
         final File[] bpmnFiles = inputDir.listFiles(new FilenameFilter() {
             @Override
@@ -50,6 +59,7 @@ public class Main {
         final StateMachineDefinitionValidator validator = new StateMachineDefinitionValidator();
         final DefinitionCreator creator = new StateMachineDefinitionCreator();
         final List<WorkflowDefinition> workflowDefinitions = new ArrayList<WorkflowDefinition>();
+        boolean isValid = true;
         for (File bpmnFile : bpmnFiles) {
             try {
                 final WorkflowDefinitionFile definitionFile = createWorkflowDefinitionFile(bpmnFile);
@@ -60,10 +70,13 @@ public class Main {
                 for (String message : e.getMessages()) {
                     System.out.println('\t' + message);
                 }
+                isValid = false;
             }
         }
-        final DefinitionWriter writer = new StateMachineDefinitionWriter();
-        writer.write(workflowDefinitions, outputDir);
+        if (isValid) {
+            final DefinitionWriter writer = new StateMachineDefinitionWriter();
+            writer.write(workflowDefinitions, outputDir);
+        }
     }
 
     /**

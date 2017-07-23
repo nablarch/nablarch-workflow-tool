@@ -60,3 +60,16 @@ dependencies {
 task wrapper(type: Wrapper) {
   gradleVersion = '2.13'
 }
+
+task fatJar(type: Jar) {
+  manifest {
+    attributes 'Main-Class': 'nablarch.tool.statemachine.Main'
+  }
+  baseName = 'statemachine-tool'
+  from {
+    configurations.runtime.collect {
+      it.isDirectory() ? it : zipTree(it)
+    }
+  }
+  with jar
+}

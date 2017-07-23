@@ -3,14 +3,12 @@ package nablarch.tool.statemachine;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-
 import javax.xml.bind.JAXBElement;
 
 import org.omg.spec.bpmn._20100524.model.TBoundaryEvent;
 import org.omg.spec.bpmn._20100524.model.TEndEvent;
+import org.omg.spec.bpmn._20100524.model.TExclusiveGateway;
 import org.omg.spec.bpmn._20100524.model.TFlowElement;
-import org.omg.spec.bpmn._20100524.model.TFlowNode;
-import org.omg.spec.bpmn._20100524.model.TGateway;
 import org.omg.spec.bpmn._20100524.model.TProcess;
 import org.omg.spec.bpmn._20100524.model.TSequenceFlow;
 import org.omg.spec.bpmn._20100524.model.TStartEvent;
@@ -31,7 +29,7 @@ public class FlowElementValidator implements Validator {
     private static final List<Class<? extends TFlowElement>> SUPPORTED_NODE = Arrays.asList(
             TStartEvent.class,
             TEndEvent.class,
-            TGateway.class,
+            TExclusiveGateway.class,
             TSequenceFlow.class,
             TSubProcess.class,
             TTask.class,
