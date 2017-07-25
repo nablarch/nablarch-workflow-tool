@@ -31,13 +31,14 @@
     <bpmn:sequenceFlow id="SequenceFlow_03n84ft" sourceRef="invalid" targetRef="EndEvent_065saxr" />
     <bpmn:boundaryEvent id="BoundaryEvent_1h1t6g6" attachedToRef="Task_02x31wn">
       <bpmn:outgoing>SequenceFlow_01tpvd0</bpmn:outgoing>
-      <bpmn:messageEventDefinition />
+      <bpmn:messageEventDefinition messageRef="Message_187f5hb" />
     </bpmn:boundaryEvent>
     <bpmn:sequenceFlow id="SequenceFlow_01tpvd0" sourceRef="BoundaryEvent_1h1t6g6" targetRef="EndEvent_065saxr" />
     <bpmn:association id="Association_1o7f6mm" sourceRef="StartEvent_0iew6tf" targetRef="TextAnnotation_1by2lfm" />
     <bpmn:textAnnotation id="TextAnnotation_1by2lfm">    <bpmn:text>これはおけること</bpmn:text>
 </bpmn:textAnnotation>
   </bpmn:process>
+  <bpmn:message id="Message_187f5hb" name="Message_24d16vi" />
   <bpmndi:BPMNDiagram id="BPMNDiagram_1">
     <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="Collaboration_06bou8k">
       <bpmndi:BPMNShape id="Participant_06e89n7_di" bpmnElement="Participant_06e89n7">

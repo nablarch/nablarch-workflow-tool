@@ -183,6 +183,15 @@ public class StateMachineDefinitionValidatorTest {
         expectedException.expectMessage("境界イベントに遷移先が設定されていません。 id:message, name:遷移先なし");
         sut.validate(file);
     }
+    
+    @Test
+    public void 境界イベントにメッセージが設定されていない場合は例外が送出されること() throws Exception {
+        final WorkflowDefinitionFile file = createWorkflowDefinitionFile("src/test/testbpmn/statemachine/validator/boundary-message-notfound.bpmn");
+
+        expectedException.expect(InvalidStateMachineModelException.class);
+        expectedException.expectMessage("境界イベントにメッセージイベントが設定されていません。 id:message, name:メッセージなし");
+        sut.validate(file);
+    }
 
     @Test
     public void サブプロセスに開始イベントが設定されていない場合は例外が送出されること() throws Exception {

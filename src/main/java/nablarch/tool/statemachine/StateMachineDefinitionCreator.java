@@ -1,12 +1,18 @@
 package nablarch.tool.statemachine;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.InputStreamReader;
+import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import javax.xml.bind.JAXB;
+import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBElement;
 
 import nablarch.core.repository.SystemRepository;
@@ -48,7 +54,13 @@ public class StateMachineDefinitionCreator implements DefinitionCreator {
 
     @Override
     public WorkflowDefinition create(final WorkflowDefinitionFile workflowDefinitionFile) {
-        final TDefinitions definitions = JAXB.unmarshal(new File(workflowDefinitionFile.getPath()), TDefinitions.class);
+        final File bpmnFile = new File(workflowDefinitionFile.getPath());
+        final TDefinitions definitions;
+        try {
+            definitions = JAXB.unmarshal(new InputStreamReader(new FileInputStream(bpmnFile), Charset.forName("utf-8")), TDefinitions.class);
+        } catch (FileNotFoundException e) {
+            throw new RuntimeException(e);
+        }
         final WorkflowDefinition workflowDefinition = new WorkflowDefinition(workflowDefinitionFile.getWorkflowId(), Integer.parseInt(workflowDefinitionFile.getVersion()),
                 workflowDefinitionFile.getWorkflowName(), workflowDefinitionFile.getEffectiveDate());
 
@@ -134,7 +146,7 @@ public class StateMachineDefinitionCreator implements DefinitionCreator {
                 final String triggerId = definition.getMessageRef().getLocalPart();
                 final String triggerName = boundaryEventTriggerMap.get(triggerId);
                 boundaryEvents.add(new BoundaryEvent(boundaryEvent.getId(), boundaryEvent.getName(), laneIdMap.get(boundaryEvent.getId()),
-                        triggerId, triggerName, boundaryEvent.getAttachedToRef().getLocalPart(), null));
+                        triggerName, triggerName, boundaryEvent.getAttachedToRef().getLocalPart(), null));
             }
         }
         return boundaryEvents;

@@ -84,10 +84,10 @@
     </bpmn:endEvent>
     <bpmn:sequenceFlow id="sub2_seq" name="サブプロセス２のシーケンスフロー" sourceRef="SubProcess_1sv02zf" targetRef="end2" />
   </bpmn:process>
-  <bpmn:message id="M01" name="メッセージ１" />
-  <bpmn:message id="M03" name="サブプロセス１のメッセージ" />
-  <bpmn:message id="M02" name="メッセージ２" />
-  <bpmn:message id="M04" name="サブプロセス２のメッセージ" />
+  <bpmn:message id="M01" name="message1" />
+  <bpmn:message id="M03" name="sub1_message1" />
+  <bpmn:message id="M02" name="message2" />
+  <bpmn:message id="M04" name="sub2_message1" />
   <bpmndi:BPMNDiagram id="BPMNDiagram_1">
     <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="Collaboration_1odw840">
       <bpmndi:BPMNShape id="Participant_03w43wj_di" bpmnElement="pool">

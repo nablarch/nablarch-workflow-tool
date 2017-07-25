@@ -86,8 +86,8 @@ public class StateMachineDefinitionCreatorTest {
                         hasProperty("flowNodeId", is("boundary")),
                         hasProperty("flowNodeName", is("境界イベント")),
                         hasProperty("laneId", is("L1")),
-                        hasProperty("boundaryEventTriggerId", is("M01")),
-                        hasProperty("boundaryEventTriggerName", is("メッセージ")),
+                        hasProperty("boundaryEventTriggerId", is("message")),
+                        hasProperty("boundaryEventTriggerName", is("message")),
                         hasProperty("attachedTaskId", is("task"))
                 )
         ));
@@ -156,8 +156,8 @@ public class StateMachineDefinitionCreatorTest {
                         hasProperty("flowNodeId", is("boundary")),
                         hasProperty("flowNodeName", is("境界イベント")),
                         hasProperty("laneId", is("L1")),
-                        hasProperty("boundaryEventTriggerId", is("M01")),
-                        hasProperty("boundaryEventTriggerName", is("メッセージ")),
+                        hasProperty("boundaryEventTriggerId", is("message")),
+                        hasProperty("boundaryEventTriggerName", is("message")),
                         hasProperty("attachedTaskId", is("task"))
                 )
         ));
@@ -252,16 +252,16 @@ public class StateMachineDefinitionCreatorTest {
                         hasProperty("flowNodeId", is("boundary")),
                         hasProperty("flowNodeName", is("境界イベント")),
                         hasProperty("laneId", is("L1")),
-                        hasProperty("boundaryEventTriggerId", is("M01")),
-                        hasProperty("boundaryEventTriggerName", is("メッセージ")),
+                        hasProperty("boundaryEventTriggerId", is("message")),
+                        hasProperty("boundaryEventTriggerName", is("message")),
                         hasProperty("attachedTaskId", is("task"))
                 ),
                 allOf(
                         hasProperty("flowNodeId", is("sub_boundary")),
                         hasProperty("flowNodeName", is("サブプロセスの境界イベント")),
                         hasProperty("laneId", is("L1")),
-                        hasProperty("boundaryEventTriggerId", is("M02")),
-                        hasProperty("boundaryEventTriggerName", is("サブプロセスのメッセージ")),
+                        hasProperty("boundaryEventTriggerId", is("sub_message")),
+                        hasProperty("boundaryEventTriggerName", is("sub_message")),
                         hasProperty("attachedTaskId", is("sub_task"))
                 )
         ));
@@ -343,16 +343,16 @@ public class StateMachineDefinitionCreatorTest {
                         hasProperty("flowNodeId", is("boundary")),
                         hasProperty("flowNodeName", is("境界イベント")),
                         hasProperty("laneId", is("L1")),
-                        hasProperty("boundaryEventTriggerId", is("M01")),
-                        hasProperty("boundaryEventTriggerName", is("メッセージ")),
+                        hasProperty("boundaryEventTriggerId", is("message")),
+                        hasProperty("boundaryEventTriggerName", is("message")),
                         hasProperty("attachedTaskId", is("task"))
                 ),
                 allOf(
                         hasProperty("flowNodeId", is("sub_boundary")),
                         hasProperty("flowNodeName", is("サブプロセスの境界イベント")),
                         hasProperty("laneId", is("L1")),
-                        hasProperty("boundaryEventTriggerId", is("M02")),
-                        hasProperty("boundaryEventTriggerName", is("サブプロセスのメッセージ")),
+                        hasProperty("boundaryEventTriggerId", is("sub_message")),
+                        hasProperty("boundaryEventTriggerName", is("sub_message")),
                         hasProperty("attachedTaskId", is("sub_task"))
                 )
         ));
@@ -461,32 +461,32 @@ public class StateMachineDefinitionCreatorTest {
                         hasProperty("flowNodeId", is("boundary1")),
                         hasProperty("flowNodeName", is("境界イベント１")),
                         hasProperty("laneId", is("L1")),
-                        hasProperty("boundaryEventTriggerId", is("M01")),
-                        hasProperty("boundaryEventTriggerName", is("メッセージ１")),
+                        hasProperty("boundaryEventTriggerId", is("message1")),
+                        hasProperty("boundaryEventTriggerName", is("message1")),
                         hasProperty("attachedTaskId", is("task"))
                 ),
                 allOf(
                         hasProperty("flowNodeId", is("boundary2")),
                         hasProperty("flowNodeName", is("境界イベント２")),
                         hasProperty("laneId", is("L1")),
-                        hasProperty("boundaryEventTriggerId", is("M02")),
-                        hasProperty("boundaryEventTriggerName", is("メッセージ２")),
+                        hasProperty("boundaryEventTriggerId", is("message2")),
+                        hasProperty("boundaryEventTriggerName", is("message2")),
                         hasProperty("attachedTaskId", is("task"))
                 ),
                 allOf(
                         hasProperty("flowNodeId", is("sub1_boundary")),
                         hasProperty("flowNodeName", is("サブプロセス１の境界イベント")),
                         hasProperty("laneId", is("L1")),
-                        hasProperty("boundaryEventTriggerId", is("M03")),
-                        hasProperty("boundaryEventTriggerName", is("サブプロセス１のメッセージ")),
+                        hasProperty("boundaryEventTriggerId", is("sub1_message1")),
+                        hasProperty("boundaryEventTriggerName", is("sub1_message1")),
                         hasProperty("attachedTaskId", is("sub1_task"))
                 ),
                 allOf(
                         hasProperty("flowNodeId", is("sub2_boundary")),
                         hasProperty("flowNodeName", is("サブプロセス２の境界イベント")),
                         hasProperty("laneId", is("L1")),
-                        hasProperty("boundaryEventTriggerId", is("M04")),
-                        hasProperty("boundaryEventTriggerName", is("サブプロセス２のメッセージ")),
+                        hasProperty("boundaryEventTriggerId", is("sub2_message1")),
+                        hasProperty("boundaryEventTriggerName", is("sub2_message1")),
                         hasProperty("attachedTaskId", is("sub2_task"))
                 )
         ));
@@ -586,24 +586,24 @@ public class StateMachineDefinitionCreatorTest {
                         hasProperty("flowNodeId", is("boundary")),
                         hasProperty("flowNodeName", is("境界イベント")),
                         hasProperty("laneId", is("L1")),
-                        hasProperty("boundaryEventTriggerId", is("M01")),
-                        hasProperty("boundaryEventTriggerName", is("メッセージ")),
+                        hasProperty("boundaryEventTriggerId", is("message")),
+                        hasProperty("boundaryEventTriggerName", is("message")),
                         hasProperty("attachedTaskId", is("task"))
                 ),
                 allOf(
                         hasProperty("flowNodeId", is("sub_boundary")),
                         hasProperty("flowNodeName", is("サブプロセスの境界イベント")),
                         hasProperty("laneId", is("L1")),
-                        hasProperty("boundaryEventTriggerId", is("M02")),
-                        hasProperty("boundaryEventTriggerName", is("サブプロセスのメッセージ")),
+                        hasProperty("boundaryEventTriggerId", is("sub_message")),
+                        hasProperty("boundaryEventTriggerName", is("sub_message")),
                         hasProperty("attachedTaskId", is("sub_task"))
                 ),
                 allOf(
                         hasProperty("flowNodeId", is("nest_sub_boundary")),
                         hasProperty("flowNodeName", is("ネストしたサブプロセスの境界イベント")),
                         hasProperty("laneId", is("L1")),
-                        hasProperty("boundaryEventTriggerId", is("M03")),
-                        hasProperty("boundaryEventTriggerName", is("ネストしたサブプロセスのメッセージ")),
+                        hasProperty("boundaryEventTriggerId", is("sub_sub_message")),
+                        hasProperty("boundaryEventTriggerName", is("sub_sub_message")),
                         hasProperty("attachedTaskId", is("nest_sub_task"))
                 )
 
@@ -708,16 +708,16 @@ public class StateMachineDefinitionCreatorTest {
                         hasProperty("flowNodeId", is("boundary1")),
                         hasProperty("flowNodeName", is("境界イベント１")),
                         hasProperty("laneId", is("L1")),
-                        hasProperty("boundaryEventTriggerId", is("M01")),
-                        hasProperty("boundaryEventTriggerName", is("メッセージ１")),
+                        hasProperty("boundaryEventTriggerId", is("message1")),
+                        hasProperty("boundaryEventTriggerName", is("message1")),
                         hasProperty("attachedTaskId", is("task1"))
                 ),
                 allOf(
                         hasProperty("flowNodeId", is("boundary2")),
                         hasProperty("flowNodeName", is("境界イベント２")),
                         hasProperty("laneId", is("L2")),
-                        hasProperty("boundaryEventTriggerId", is("M02")),
-                        hasProperty("boundaryEventTriggerName", is("メッセージ２")),
+                        hasProperty("boundaryEventTriggerId", is("message2")),
+                        hasProperty("boundaryEventTriggerName", is("message2")),
                         hasProperty("attachedTaskId", is("task2"))
                 )
         ));
@@ -825,8 +825,8 @@ public class StateMachineDefinitionCreatorTest {
                         hasProperty("flowNodeId", is("boundary")),
                         hasProperty("flowNodeName", is("境界イベント")),
                         hasProperty("laneId", is("L1")),
-                        hasProperty("boundaryEventTriggerId", is("M01")),
-                        hasProperty("boundaryEventTriggerName", is("メッセージ")),
+                        hasProperty("boundaryEventTriggerId", is("message")),
+                        hasProperty("boundaryEventTriggerName", is("message")),
                         hasProperty("attachedTaskId", is("task"))
                 )
         ));

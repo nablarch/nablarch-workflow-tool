@@ -72,9 +72,9 @@
       <bpmn:terminateEventDefinition />
     </bpmn:endEvent>
   </bpmn:process>
-  <bpmn:message id="M01" name="メッセージ" />
-  <bpmn:message id="M02" name="サブプロセスのメッセージ" />
-  <bpmn:message id="M03" name="ネストしたサブプロセスのメッセージ" />
+  <bpmn:message id="M01" name="message" />
+  <bpmn:message id="M02" name="sub_message" />
+  <bpmn:message id="M03" name="sub_sub_message" />
   <bpmndi:BPMNDiagram id="BPMNDiagram_1">
     <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="Collaboration_1odw840">
       <bpmndi:BPMNShape id="Participant_03w43wj_di" bpmnElement="pool">

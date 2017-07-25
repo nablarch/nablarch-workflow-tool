@@ -30,7 +30,11 @@ public class BoundaryEventValidator implements Validator {
     @Override
     public void validate(final ValidateContext context) {
         for (TBoundaryEvent boundaryEvent : boundaryEvents) {
-            validateType(context, boundaryEvent);
+            if (!validateType(context, boundaryEvent)) {
+                continue;
+            }
+            
+            validateMessage(context, boundaryEvent);
             validateOutgoing(context, boundaryEvent);
         }
     }
@@ -48,17 +52,36 @@ public class BoundaryEventValidator implements Validator {
     }
 
     /**
+     * 境界イベントのメッセージ定義をバリデーションする。
+     *
+     * @param context バリデーションコンテキスト
+     * @param event 境界イベント
+     */
+    private void validateMessage(final ValidateContext context, final TBoundaryEvent event) {
+        final TMessageEventDefinition value = (TMessageEventDefinition) event.getEventDefinition()
+                                                                             .get(0)
+                                                                             .getValue();
+        if (value.getMessageRef() == null) {
+            context.addMessage(MessageUtil.getMessage("boundary.message.notfound", event.getId(), event.getName()));
+        }
+    }
+
+    /**
      * 境界イベントタイプをバリデーションする。
      * @param context バリデーションコンテキスト
      * @param boundaryEvent 境界イベント
+     * @return バリデーション結果
      */
-    private void validateType(final ValidateContext context, final TBoundaryEvent boundaryEvent) {
+    private boolean validateType(final ValidateContext context, final TBoundaryEvent boundaryEvent) {
         final List<JAXBElement<? extends TEventDefinition>> eventDefinition = boundaryEvent.getEventDefinition();
         if (eventDefinition.isEmpty() || !(eventDefinition.get(0)
                                                           .getValue() instanceof TMessageEventDefinition)) {
             context.addMessage(
                     MessageUtil.getMessage("unsupported.boundary.event", boundaryEvent.getId(),
                             boundaryEvent.getName()));
+            return false;
+        } else {
+            return true;
         }
     }
 }
