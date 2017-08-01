@@ -5,6 +5,7 @@ import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintStream;
@@ -27,6 +28,7 @@ import nablarch.tool.workflow.helper.ErrorLogReader;
 import nablarch.integration.workflow.definition.loader.WorkflowDefinitionSchema;
 
 import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.Matchers.nullValue;
 import static org.hamcrest.collection.IsIn.isIn;
 import static org.junit.Assert.assertThat;
 
@@ -72,17 +74,138 @@ public class WorkflowDefinitionGeneratorTest {
     }
 
     /**
-     * 複数ファイル読み込み。（エラー無）
+     * 複数ファイルを読み込んでCSV形式で出力する。(デフォルト)
      *
      * @throws Exception 想定外エラー
      */
     @Test
     public void testNormalExit() throws Exception {
         System.setProperty("inputFileDir", "src/test/java/nablarch/tool/workflow/bpmn/xml/read/normal/multiInput/");
+        WorkflowDefinitionGenerator.main("classpath:nablarch/tool/workflow/WorkflowDefinitionGeneratorCsvTest.xml");
+
+        String outputDir = SystemRepository.get("outputFileDir");
+
+        // ワークフロー定義
+        File file = new File(outputDir, "WF_WORKFLOW_DEFINITION.csv");
+        assertThat(file.exists(), is(true));
+        BufferedReader reader = new BufferedReader(new FileReader(file));
+        assertThat(reader.readLine(), is("WORKFLOW_ID,DEF_VERSION,WORKFLOW_NAME,EFFECTIVE_DATE"));
+        assertThat(reader.readLine(), is("WP0002,1,sequenceFlowReadTest,20140814"));
+        assertThat(reader.readLine(), is("WP0001,1,normalWorkflow,20140804"));
+        assertThat(reader.readLine(), is(nullValue()));
+        reader.close();
+
+        // レーン
+        file = new File(outputDir, "WF_LANE.csv");
+        assertThat(file.exists(), is(true));
+        reader = new BufferedReader(new FileReader(file));
+        assertThat(reader.readLine(), is("WORKFLOW_ID,DEF_VERSION,LANE_ID,LANE_NAME"));
+        assertThat(reader.readLine(), is("WP0002,1,laneId1,Lane 1"));
+        assertThat(reader.readLine(), is("WP0001,1,laneId1,laneName1"));
+        assertThat(reader.readLine(), is("WP0001,1,laneId2,laneName2"));
+        assertThat(reader.readLine(), is(nullValue()));
+        reader.close();
+
+        // フローノード
+        file = new File(outputDir, "WF_FLOW_NODE.csv");
+        assertThat(file.exists(), is(true));
+        reader = new BufferedReader(new FileReader(file));
+        assertThat(reader.readLine(), is("WORKFLOW_ID,DEF_VERSION,FLOW_NODE_ID,LANE_ID,FLOW_NODE_NAME"));
+        assertThat(reader.readLine(), is("WP0002,1,startevent12345678,laneId1,startevent_name"));
+        assertThat(reader.readLine(), is("WP0002,1,terminateEndEvent1,laneId1,terminateEndEvent_name"));
+        assertThat(reader.readLine(), is("WP0002,1,exclusivegateway12,laneId1,exclusivegateway_name"));
+        assertThat(reader.readLine(), is("WP0002,1,usertask1234567890,laneId1,usertask_name"));
+        assertThat(reader.readLine(), is("WP0001,1,startevent12345678,laneId1,Start"));
+        assertThat(reader.readLine(), is("WP0001,1,terminateendevent1,laneId1,TerminateEndEvent"));
+        assertThat(reader.readLine(), is("WP0001,1,endevent1234567890,laneId2,TerminateEndEvent"));
+        assertThat(reader.readLine(), is("WP0001,1,exclusivegateway12,laneId2,Exclusive Gateway1"));
+        assertThat(reader.readLine(), is("WP0001,1,exclusivegateway23,laneId2,Exclusive Gateway2"));
+        assertThat(reader.readLine(), is("WP0001,1,usertask1234567890,laneId1,User Task1"));
+        assertThat(reader.readLine(), is("WP0001,1,usertask2345678901,laneId2,User Task2"));
+        assertThat(reader.readLine(), is("WP0001,1,usertask3456789012,laneId2,User Task3"));
+        assertThat(reader.readLine(), is("WP0001,1,boundarymessage123,laneId2,Message"));
+        assertThat(reader.readLine(), is(nullValue()));
+        reader.close();
+
+        // イベント
+        file = new File(outputDir, "WF_EVENT.csv");
+        assertThat(file.exists(), is(true));
+        reader = new BufferedReader(new FileReader(file));
+        assertThat(reader.readLine(), is("WORKFLOW_ID,DEF_VERSION,FLOW_NODE_ID,EVENT_TYPE"));
+        assertThat(reader.readLine(), is("WP0002,1,startevent12345678,START"));
+        assertThat(reader.readLine(), is("WP0002,1,terminateEndEvent1,TERMINATE"));
+        assertThat(reader.readLine(), is("WP0001,1,startevent12345678,START"));
+        assertThat(reader.readLine(), is("WP0001,1,terminateendevent1,TERMINATE"));
+        assertThat(reader.readLine(), is("WP0001,1,endevent1234567890,TERMINATE"));
+        assertThat(reader.readLine(), is(nullValue()));
+        reader.close();
+
+        // ゲートウェイ
+        file = new File(outputDir, "WF_GATEWAY.csv");
+        assertThat(file.exists(), is(true));
+        reader = new BufferedReader(new FileReader(file));
+        assertThat(reader.readLine(), is("WORKFLOW_ID,DEF_VERSION,FLOW_NODE_ID,GATEWAY_TYPE"));
+        assertThat(reader.readLine(), is("WP0002,1,exclusivegateway12,EXCLUSIVE"));
+        assertThat(reader.readLine(), is("WP0001,1,exclusivegateway12,EXCLUSIVE"));
+        assertThat(reader.readLine(), is("WP0001,1,exclusivegateway23,EXCLUSIVE"));
+        assertThat(reader.readLine(), is(nullValue()));
+        reader.close();
+
+        // タスク
+        file = new File(outputDir, "WF_TASK.csv");
+        assertThat(file.exists(), is(true));
+        reader = new BufferedReader(new FileReader(file));
+        assertThat(reader.readLine(), is("WORKFLOW_ID,DEF_VERSION,FLOW_NODE_ID,MULTI_INSTANCE_TYPE,COMPLETION_CONDITION"));
+        assertThat(reader.readLine(), is("WP0002,1,usertask1234567890,NONE,"));
+        assertThat(reader.readLine(), is("WP0001,1,usertask1234567890,NONE,"));
+        assertThat(reader.readLine(), is("WP0001,1,usertask2345678901,PARALLEL,nablarch.tool.workflow.SampleCompletionCondition"));
+        assertThat(reader.readLine(), is("WP0001,1,usertask3456789012,SEQUENTIAL,nablarch.tool.workflow.SampleCompletionCondition(1)"));
+        assertThat(reader.readLine(), is(nullValue()));
+        reader.close();
+
+        // 境界イベント
+        file = new File(outputDir, "WF_BOUNDARY_EVENT.csv");
+        assertThat(file.exists(), is(true));
+        reader = new BufferedReader(new FileReader(file));
+        assertThat(reader.readLine(), is("WORKFLOW_ID,DEF_VERSION,FLOW_NODE_ID,BOUNDARY_EVENT_TRIGGER_ID,ATTACHED_TASK_ID"));
+        assertThat(reader.readLine(), is("WP0001,1,boundarymessage123,MG001,usertask2345678901"));
+        assertThat(reader.readLine(), is(nullValue()));
+        reader.close();
+
+
+        // シーケンスフロー
+        file = new File(outputDir, "WF_SEQUENCE_FLOW.csv");
+        assertThat(file.exists(), is(true));
+        reader = new BufferedReader(new FileReader(file));
+        assertThat(reader.readLine(), is("WORKFLOW_ID,DEF_VERSION,SEQUENCE_FLOW_ID,SOURCE_FLOW_NODE_ID,TARGET_FLOW_NODE_ID,FLOW_PROCEED_CONDITION,SEQUENCE_FLOW_NAME"));
+        assertThat(reader.readLine(), is("WP0002,1,flow1,startevent12345678,usertask1234567890,,to UserTask"));
+        assertThat(reader.readLine(), is("WP0002,1,flow2,usertask1234567890,exclusivegateway12,,to ExclusiveGateway"));
+        assertThat(reader.readLine(), is("WP0002,1,flow3,exclusivegateway12,terminateEndEvent1,nablarch.tool.workflow.SampleFlowProceedCondition,to End"));
+        assertThat(reader.readLine(), is("WP0001,1,flow1,startevent12345678,usertask1234567890,,to UserTask1"));
+        assertThat(reader.readLine(), is("WP0001,1,flow2,usertask1234567890,usertask2345678901,,to User Task2"));
+        assertThat(reader.readLine(), is("WP0001,1,flow3,boundarymessage123,usertask1234567890,,to User Task1"));
+        assertThat(reader.readLine(), is("WP0001,1,flow4,usertask2345678901,exclusivegateway12,,to Exclusive Gateway1"));
+        assertThat(reader.readLine(), is("WP0001,1,flow5,exclusivegateway12,usertask1234567890,\"nablarch.tool.workflow.SampleFlowProceedCondition(condition,1)\",to User Task1"));
+        assertThat(reader.readLine(), is("WP0001,1,flow6,exclusivegateway12,exclusivegateway23,nablarch.tool.workflow.SampleFlowProceedCondition,to Exclusive Gateway2"));
+        assertThat(reader.readLine(), is("WP0001,1,flow8,exclusivegateway23,terminateendevent1,nablarch.tool.workflow.SampleFlowProceedCondition,to TerminateEndEvent"));
+        assertThat(reader.readLine(), is("WP0001,1,flow7,exclusivegateway23,usertask3456789012,\"jp.co.tis.workflow.CustomCondition(result, 1)\",to User Task3"));
+        assertThat(reader.readLine(), is("WP0001,1,flow9,usertask3456789012,endevent1234567890,,to TerminateEndEvent"));
+        assertThat(reader.readLine(), is(nullValue()));
+        reader.close();
+    }
+
+    /**
+     * 複数ファイルを読み込んでExcel形式で出力する
+     *
+     * @throws Exception 想定外エラー
+     */
+    @Test
+    public void testNormalExit_excel() throws Exception {
+        System.setProperty("inputFileDir", "src/test/java/nablarch/tool/workflow/bpmn/xml/read/normal/multiInput/");
         WorkflowDefinitionGenerator.main("classpath:nablarch/tool/workflow/WorkflowDefinitionGeneratorTest.xml");
 
         // 出力先のブックを取得
-        HSSFWorkbook outBook = new HSSFWorkbook(new FileInputStream("src/test/work/MASTER_DATA_WF.xls"));
+        HSSFWorkbook outBook = new HSSFWorkbook(new FileInputStream("src/test/work/workflowDefinitionData.xls"));
         SimpleTableReader tableReader = new SimpleTableReader().setHeaderRowNum(1);
 
         WorkflowDefinitionSchema schema = SystemRepository.get("workflowDefinitionSchema");
@@ -107,7 +230,7 @@ public class WorkflowDefinitionGeneratorTest {
      */
     @Test
     public void duplicateWorkflow() throws Exception {
-        String outputFilePath = "src/test/work/MASTER_DATA_WF_HAS_ERROR.xls";
+        String outputFilePath = "src/test/work/workflowDefinitionData.xls";
         String logFilePath = "src/test/work/duplicateWorkflow.log";
         System.setProperty("inputFileDir", "src/test/java/nablarch/tool/workflow/bpmn/xml/validate/duplicateWorkflow/");
         System.setProperty("outputFilePath", outputFilePath);
@@ -323,7 +446,7 @@ public class WorkflowDefinitionGeneratorTest {
      */
     @Test
     public void validateError() throws Exception {
-        String outputFilePath = "src/test/work/MASTER_DATA_WF_VALIDATE_ERROR.xls";
+        String outputFilePath = "src/test/work/workflowDefinitionData.xls";
         String logFilePath = "src/test/work/validateError.log";
         System.setProperty("inputFileDir", "src/test/java/nablarch/tool/workflow/bpmn/xml/read/invalid/validateError/");
         System.setProperty("outputFilePath", outputFilePath);

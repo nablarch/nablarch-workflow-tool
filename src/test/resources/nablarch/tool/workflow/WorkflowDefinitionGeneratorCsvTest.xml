@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <component-configuration xmlns="http://tis.co.jp/nablarch/component-configuration" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
                          xsi:schemaLocation="http://tis.co.jp/nablarch/component-configuration  /component-configuration.xsd">
-    <config-file file="classpath:nablarch/tool/workflow/integration/IntegrationTest.config"/>
+    <config-file file="classpath:nablarch/tool/workflow/WorkflowDefinitionGeneratorTest.config"/>
     <import file="classpath:nablarch/tool/workflow/default-definition.xml"/>
 
     <component name="workflowDefinitionGeneratorSettings" class="nablarch.tool.workflow.WorkflowDefinitionGeneratorSettings">
@@ -11,9 +11,6 @@
         <property name="logFilePath" value="${logFilePath}"/>
         <property name="workflowIdColumnLength" value="${workflowIdColumnLength}"/>
         <property name="workflowDefinitionReader" ref="workflowDefinitionReader"/>
-        <property name="dataWriter">
-            <component class="nablarch.tool.workflow.ExcelDataWriter" />
-        </property>
     </component>
 
     <component name="workflowDefinitionReader" class="nablarch.tool.workflow.bpmn.BpmnWorkflowDefinitionReader"/>
@@ -25,18 +22,12 @@
     </component>
 
     <map name="flowProceedCondition">
-        <entry key="eq" value="nablarch.integration.workflow.condition.EqFlowProceedCondition"/>
-        <entry key="ge" value="nablarch.tool.workflow.SampleFlowProceedCondition"/>
-        <entry key="gt" value="nablarch.tool.workflow.SampleFlowProceedCondition"/>
-        <entry key="le" value="nablarch.tool.workflow.SampleFlowProceedCondition"/>
-        <entry key="lt" value="nablarch.tool.workflow.SampleFlowProceedCondition"/>
-        <entry key="ne" value="nablarch.tool.workflow.SampleFlowProceedCondition"/>
-        <entry key="sq" value="nablarch.tool.workflow.SampleFlowProceedCondition"/>
-        <entry key="nq" value="nablarch.tool.workflow.SampleFlowProceedCondition"/>
+        <entry key="eq" value="nablarch.tool.workflow.SampleFlowProceedCondition"/>
+        <entry key="ge" value="nablarch.tool.workflow.GeFlowProceedCondition"/>
     </map>
 
     <map name="completionCondition">
-        <entry key="or" value="nablarch.integration.workflow.condition.OrCompletionCondition"/>
-        <entry key="all" value="nablarch.integration.workflow.condition.AllCompletionCondition"/>
+        <entry key="or" value="nablarch.tool.workflow.SampleCompletionCondition"/>
+        <entry key="all" value="nablarch.tool.workflow.AllCompletionCondition"/>
     </map>
 </component-configuration>

@@ -97,7 +97,7 @@ public class IntegrationTest {
         WorkflowDefinitionGenerator.main("classpath:nablarch/tool/workflow/integration/IntegrationTest.xml");
 
         // DBセットアップ
-        MasterDataSetUpper.main("classpath:nablarch/tool/workflow/integration/master-data.xml", "src/test/work/MASTER_DATA_WF_IT.xls");
+        MasterDataSetUpper.main("classpath:nablarch/tool/workflow/integration/master-data.xml", "src/test/work/workflowDefinitionData.xls");
 
         SystemRepository.load(new DiContainer(new XmlComponentDefinitionLoader("nablarch/tool/workflow/integration/default-definition.xml")));
         WorkflowDefinitionHolder workflowDefinitionHolder = SystemRepository.get("workflowDefinitionHolder");

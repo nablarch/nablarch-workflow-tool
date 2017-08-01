@@ -10,7 +10,7 @@ import nablarch.integration.workflow.definition.WorkflowDefinition;
  *
  * @author Naoki Yamamoto
  */
-public interface DefinitionWriter {
+public interface DataWriter {
 
     /**
      * 外部ファイルへの書き込みを行う。

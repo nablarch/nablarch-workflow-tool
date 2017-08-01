@@ -1,4 +1,4 @@
-package nablarch.tool.statemachine;
+package nablarch.tool;
 
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.nullValue;
@@ -6,7 +6,9 @@ import static org.junit.Assert.assertThat;
 
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileReader;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Arrays;
 
@@ -20,15 +22,17 @@ import nablarch.integration.workflow.definition.SequenceFlow;
 import nablarch.integration.workflow.definition.Task;
 import nablarch.integration.workflow.definition.WorkflowDefinition;
 import nablarch.test.support.SystemRepositoryResource;
+import nablarch.tool.CsvDataWriter;
 import nablarch.tool.workflow.WorkflowDefinitionGeneratorSequenceFlow;
+import nablarch.tool.workflow.WorkflowDefinitionGeneratorTask;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
 
 /**
- * {@link StateMachineDefinitionWriter}のテストクラス。
+ * {@link CsvDataWriter}のテストクラス。
  */
-public class StateMachineDefinitionWriterTest {
+public class CsvDataWriterTest {
 
     @Rule
     public SystemRepositoryResource repositoryResource = new SystemRepositoryResource("nablarch/tool/workflow/default-definition.xml");
@@ -37,7 +41,7 @@ public class StateMachineDefinitionWriterTest {
     public TemporaryFolder temporaryFolder = new TemporaryFolder();
 
     /** テスト対象 */
-    private final StateMachineDefinitionWriter sut = new StateMachineDefinitionWriter();
+    private final CsvDataWriter sut = new CsvDataWriter();
 
     @Test
     public void ステートマシン定義をもとにCSVファイルを出力できること() throws Exception {
@@ -54,7 +58,7 @@ public class StateMachineDefinitionWriterTest {
             add(new Gateway("gateway", "ゲートウェイ", "01", GatewayType.EXCLUSIVE.toString(), null));
         }});
         workflowDefinition.setTasks(new ArrayList<Task>() {{
-            add(new Task("task", "タスク", "01", Task.MultiInstanceType.NONE.toString(), null, null));
+            add(new WorkflowDefinitionGeneratorTask("task", "タスク", "01", Task.MultiInstanceType.NONE.toString(), null));
         }});
         workflowDefinition.setBoundaryEvents(new ArrayList<BoundaryEvent>() {{
             add(new BoundaryEvent("boundary", "境界イベント", "01",
@@ -76,7 +80,7 @@ public class StateMachineDefinitionWriterTest {
         // ワークフロー定義
         File file = new File(temporaryFolder.getRoot(), "WF_WORKFLOW_DEFINITION.csv");
         assertThat(file.exists(), is(true));
-        BufferedReader reader = new BufferedReader(new FileReader(file));
+        BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(file), "Windows-31j"));
         assertThat(reader.readLine(), is("WORKFLOW_ID,DEF_VERSION,WORKFLOW_NAME,EFFECTIVE_DATE"));
         assertThat(reader.readLine(), is("WP0001,1,test,20170101"));
         assertThat(reader.readLine(), is(nullValue()));
@@ -85,7 +89,7 @@ public class StateMachineDefinitionWriterTest {
         // レーン
         file = new File(temporaryFolder.getRoot(), "WF_LANE.csv");
         assertThat(file.exists(), is(true));
-        reader = new BufferedReader(new FileReader(file));
+        reader = new BufferedReader(new InputStreamReader(new FileInputStream(file), "Windows-31j"));
         assertThat(reader.readLine(), is("WORKFLOW_ID,DEF_VERSION,LANE_ID,LANE_NAME"));
         assertThat(reader.readLine(), is("WP0001,1,01,レーン１"));
         assertThat(reader.readLine(), is(nullValue()));
@@ -94,7 +98,7 @@ public class StateMachineDefinitionWriterTest {
         // フローノード
         file = new File(temporaryFolder.getRoot(), "WF_FLOW_NODE.csv");
         assertThat(file.exists(), is(true));
-        reader = new BufferedReader(new FileReader(file));
+        reader = new BufferedReader(new InputStreamReader(new FileInputStream(file), "Windows-31j"));
         assertThat(reader.readLine(), is("WORKFLOW_ID,DEF_VERSION,FLOW_NODE_ID,LANE_ID,FLOW_NODE_NAME"));
         assertThat(reader.readLine(), is("WP0001,1,start,01,開始イベント"));
         assertThat(reader.readLine(), is("WP0001,1,end,01,停止イベント"));
@@ -107,7 +111,7 @@ public class StateMachineDefinitionWriterTest {
         // イベント
         file = new File(temporaryFolder.getRoot(), "WF_EVENT.csv");
         assertThat(file.exists(), is(true));
-        reader = new BufferedReader(new FileReader(file));
+        reader = new BufferedReader(new InputStreamReader(new FileInputStream(file), "Windows-31j"));
         assertThat(reader.readLine(), is("WORKFLOW_ID,DEF_VERSION,FLOW_NODE_ID,EVENT_TYPE"));
         assertThat(reader.readLine(), is("WP0001,1,start,START"));
         assertThat(reader.readLine(), is("WP0001,1,end,TERMINATE"));
@@ -117,7 +121,7 @@ public class StateMachineDefinitionWriterTest {
         // ゲートウェイ
         file = new File(temporaryFolder.getRoot(), "WF_GATEWAY.csv");
         assertThat(file.exists(), is(true));
-        reader = new BufferedReader(new FileReader(file));
+        reader = new BufferedReader(new InputStreamReader(new FileInputStream(file), "Windows-31j"));
         assertThat(reader.readLine(), is("WORKFLOW_ID,DEF_VERSION,FLOW_NODE_ID,GATEWAY_TYPE"));
         assertThat(reader.readLine(), is("WP0001,1,gateway,EXCLUSIVE"));
         assertThat(reader.readLine(), is(nullValue()));
@@ -126,7 +130,7 @@ public class StateMachineDefinitionWriterTest {
         // タスク
         file = new File(temporaryFolder.getRoot(), "WF_TASK.csv");
         assertThat(file.exists(), is(true));
-        reader = new BufferedReader(new FileReader(file));
+        reader = new BufferedReader(new InputStreamReader(new FileInputStream(file), "Windows-31j"));
         assertThat(reader.readLine(), is("WORKFLOW_ID,DEF_VERSION,FLOW_NODE_ID,MULTI_INSTANCE_TYPE,COMPLETION_CONDITION"));
         assertThat(reader.readLine(), is("WP0001,1,task,NONE,"));
         assertThat(reader.readLine(), is(nullValue()));
@@ -135,7 +139,7 @@ public class StateMachineDefinitionWriterTest {
         // 境界イベント
         file = new File(temporaryFolder.getRoot(), "WF_BOUNDARY_EVENT.csv");
         assertThat(file.exists(), is(true));
-        reader = new BufferedReader(new FileReader(file));
+        reader = new BufferedReader(new InputStreamReader(new FileInputStream(file), "Windows-31j"));
         assertThat(reader.readLine(), is("WORKFLOW_ID,DEF_VERSION,FLOW_NODE_ID,BOUNDARY_EVENT_TRIGGER_ID,ATTACHED_TASK_ID"));
         assertThat(reader.readLine(), is("WP0001,1,boundary,M01,task"));
         assertThat(reader.readLine(), is(nullValue()));
@@ -144,7 +148,7 @@ public class StateMachineDefinitionWriterTest {
         // 境界イベントトリガー
         file = new File(temporaryFolder.getRoot(), "WF_BOUNDARY_EVENT_TRIGGER.csv");
         assertThat(file.exists(), is(true));
-        reader = new BufferedReader(new FileReader(file));
+        reader = new BufferedReader(new InputStreamReader(new FileInputStream(file), "Windows-31j"));
         assertThat(reader.readLine(), is("WORKFLOW_ID,DEF_VERSION,BOUNDARY_EVENT_TRIGGER_ID,BOUNDARY_EVENT_TRIGGER_NAME"));
         assertThat(reader.readLine(), is("WP0001,1,M01,メッセージ"));
         assertThat(reader.readLine(), is(nullValue()));
@@ -153,7 +157,7 @@ public class StateMachineDefinitionWriterTest {
         // シーケンスフロー
         file = new File(temporaryFolder.getRoot(), "WF_SEQUENCE_FLOW.csv");
         assertThat(file.exists(), is(true));
-        reader = new BufferedReader(new FileReader(file));
+        reader = new BufferedReader(new InputStreamReader(new FileInputStream(file), "Windows-31j"));
         assertThat(reader.readLine(), is("WORKFLOW_ID,DEF_VERSION,SEQUENCE_FLOW_ID,SOURCE_FLOW_NODE_ID,TARGET_FLOW_NODE_ID,FLOW_PROCEED_CONDITION,SEQUENCE_FLOW_NAME"));
         assertThat(reader.readLine(), is("WP0001,1,start_sequence,start,task,,開始イベントのシーケンスフロー"));
         assertThat(reader.readLine(), is("WP0001,1,boundary_sequence,boundary,gateway,,境界イベントのシーケンスフロー"));
@@ -178,7 +182,7 @@ public class StateMachineDefinitionWriterTest {
             add(new Gateway("gateway", "ゲートウェイ", "01", GatewayType.EXCLUSIVE.toString(), null));
         }});
         workflowDefinition1.setTasks(new ArrayList<Task>() {{
-            add(new Task("task", "タスク", "01", Task.MultiInstanceType.NONE.toString(), null, null));
+            add(new WorkflowDefinitionGeneratorTask("task", "タスク", "01", Task.MultiInstanceType.NONE.toString(), null));
         }});
         workflowDefinition1.setBoundaryEvents(new ArrayList<BoundaryEvent>() {{
             add(new BoundaryEvent("boundary", "境界イベント", "01",
@@ -209,8 +213,8 @@ public class StateMachineDefinitionWriterTest {
             add(new Gateway("gateway", "ゲートウェイ", "01", GatewayType.EXCLUSIVE.toString(), null));
         }});
         workflowDefinition2.setTasks(new ArrayList<Task>() {{
-            add(new Task("task1", "タスク１", "01", Task.MultiInstanceType.NONE.toString(), null, null));
-            add(new Task("task2", "タスク２", "02", Task.MultiInstanceType.NONE.toString(), null, null));
+            add(new WorkflowDefinitionGeneratorTask("task1", "タスク１", "01", Task.MultiInstanceType.NONE.toString(), null));
+            add(new WorkflowDefinitionGeneratorTask("task2", "タスク２", "02", Task.MultiInstanceType.NONE.toString(), null));
         }});
         workflowDefinition2.setBoundaryEvents(new ArrayList<BoundaryEvent>() {{
             add(new BoundaryEvent("boundary1", "境界イベント１", "01",
@@ -236,7 +240,7 @@ public class StateMachineDefinitionWriterTest {
         // ワークフロー定義
         File file = new File(temporaryFolder.getRoot(), "WF_WORKFLOW_DEFINITION.csv");
         assertThat(file.exists(), is(true));
-        BufferedReader reader = new BufferedReader(new FileReader(file));
+        BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(file), "Windows-31j"));
         assertThat(reader.readLine(), is("WORKFLOW_ID,DEF_VERSION,WORKFLOW_NAME,EFFECTIVE_DATE"));
         assertThat(reader.readLine(), is("WP0001,1,test1,20170101"));
         assertThat(reader.readLine(), is("WP0002,1,test2,20170101"));
@@ -246,7 +250,7 @@ public class StateMachineDefinitionWriterTest {
         // レーン
         file = new File(temporaryFolder.getRoot(), "WF_LANE.csv");
         assertThat(file.exists(), is(true));
-        reader = new BufferedReader(new FileReader(file));
+        reader = new BufferedReader(new InputStreamReader(new FileInputStream(file), "Windows-31j"));
         assertThat(reader.readLine(), is("WORKFLOW_ID,DEF_VERSION,LANE_ID,LANE_NAME"));
         assertThat(reader.readLine(), is("WP0001,1,01,レーン"));
         assertThat(reader.readLine(), is("WP0002,1,01,レーン１"));
@@ -257,7 +261,7 @@ public class StateMachineDefinitionWriterTest {
         // フローノード
         file = new File(temporaryFolder.getRoot(), "WF_FLOW_NODE.csv");
         assertThat(file.exists(), is(true));
-        reader = new BufferedReader(new FileReader(file));
+        reader = new BufferedReader(new InputStreamReader(new FileInputStream(file), "Windows-31j"));
         assertThat(reader.readLine(), is("WORKFLOW_ID,DEF_VERSION,FLOW_NODE_ID,LANE_ID,FLOW_NODE_NAME"));
         assertThat(reader.readLine(), is("WP0001,1,start,01,開始イベント"));
         assertThat(reader.readLine(), is("WP0001,1,end,01,停止イベント"));
@@ -278,7 +282,7 @@ public class StateMachineDefinitionWriterTest {
         // イベント
         file = new File(temporaryFolder.getRoot(), "WF_EVENT.csv");
         assertThat(file.exists(), is(true));
-        reader = new BufferedReader(new FileReader(file));
+        reader = new BufferedReader(new InputStreamReader(new FileInputStream(file), "Windows-31j"));
         assertThat(reader.readLine(), is("WORKFLOW_ID,DEF_VERSION,FLOW_NODE_ID,EVENT_TYPE"));
         assertThat(reader.readLine(), is("WP0001,1,start,START"));
         assertThat(reader.readLine(), is("WP0001,1,end,TERMINATE"));
@@ -291,7 +295,7 @@ public class StateMachineDefinitionWriterTest {
         // ゲートウェイ
         file = new File(temporaryFolder.getRoot(), "WF_GATEWAY.csv");
         assertThat(file.exists(), is(true));
-        reader = new BufferedReader(new FileReader(file));
+        reader = new BufferedReader(new InputStreamReader(new FileInputStream(file), "Windows-31j"));
         assertThat(reader.readLine(), is("WORKFLOW_ID,DEF_VERSION,FLOW_NODE_ID,GATEWAY_TYPE"));
         assertThat(reader.readLine(), is("WP0001,1,gateway,EXCLUSIVE"));
         assertThat(reader.readLine(), is("WP0002,1,gateway,EXCLUSIVE"));
@@ -301,7 +305,7 @@ public class StateMachineDefinitionWriterTest {
         // タスク
         file = new File(temporaryFolder.getRoot(), "WF_TASK.csv");
         assertThat(file.exists(), is(true));
-        reader = new BufferedReader(new FileReader(file));
+        reader = new BufferedReader(new InputStreamReader(new FileInputStream(file), "Windows-31j"));
         assertThat(reader.readLine(), is("WORKFLOW_ID,DEF_VERSION,FLOW_NODE_ID,MULTI_INSTANCE_TYPE,COMPLETION_CONDITION"));
         assertThat(reader.readLine(), is("WP0001,1,task,NONE,"));
         assertThat(reader.readLine(), is("WP0002,1,task1,NONE,"));
@@ -312,7 +316,7 @@ public class StateMachineDefinitionWriterTest {
         // 境界イベント
         file = new File(temporaryFolder.getRoot(), "WF_BOUNDARY_EVENT.csv");
         assertThat(file.exists(), is(true));
-        reader = new BufferedReader(new FileReader(file));
+        reader = new BufferedReader(new InputStreamReader(new FileInputStream(file), "Windows-31j"));
         assertThat(reader.readLine(), is("WORKFLOW_ID,DEF_VERSION,FLOW_NODE_ID,BOUNDARY_EVENT_TRIGGER_ID,ATTACHED_TASK_ID"));
         assertThat(reader.readLine(), is("WP0001,1,boundary,M01,task"));
         assertThat(reader.readLine(), is("WP0002,1,boundary1,M01,task1"));
@@ -323,7 +327,7 @@ public class StateMachineDefinitionWriterTest {
         // 境界イベントトリガー
         file = new File(temporaryFolder.getRoot(), "WF_BOUNDARY_EVENT_TRIGGER.csv");
         assertThat(file.exists(), is(true));
-        reader = new BufferedReader(new FileReader(file));
+        reader = new BufferedReader(new InputStreamReader(new FileInputStream(file), "Windows-31j"));
         assertThat(reader.readLine(), is("WORKFLOW_ID,DEF_VERSION,BOUNDARY_EVENT_TRIGGER_ID,BOUNDARY_EVENT_TRIGGER_NAME"));
         assertThat(reader.readLine(), is("WP0001,1,M01,メッセージ"));
         assertThat(reader.readLine(), is("WP0002,1,M01,メッセージ１"));
@@ -334,7 +338,7 @@ public class StateMachineDefinitionWriterTest {
         // シーケンスフロー
         file = new File(temporaryFolder.getRoot(), "WF_SEQUENCE_FLOW.csv");
         assertThat(file.exists(), is(true));
-        reader = new BufferedReader(new FileReader(file));
+        reader = new BufferedReader(new InputStreamReader(new FileInputStream(file), "Windows-31j"));
         assertThat(reader.readLine(), is("WORKFLOW_ID,DEF_VERSION,SEQUENCE_FLOW_ID,SOURCE_FLOW_NODE_ID,TARGET_FLOW_NODE_ID,FLOW_PROCEED_CONDITION,SEQUENCE_FLOW_NAME"));
         assertThat(reader.readLine(), is("WP0001,1,start_sequence,start,task,,開始イベントのシーケンスフロー"));
         assertThat(reader.readLine(), is("WP0001,1,boundary_sequence,boundary,gateway,,境界イベントのシーケンスフロー"));

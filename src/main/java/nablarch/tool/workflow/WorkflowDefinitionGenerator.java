@@ -14,6 +14,7 @@ import nablarch.core.repository.di.DiContainer;
 import nablarch.core.repository.di.config.xml.XmlComponentDefinitionLoader;
 
 import nablarch.integration.workflow.definition.WorkflowDefinition;
+import nablarch.tool.DataWriter;
 
 /**
  * ワークフロー定義データを生成するクラス。
@@ -75,14 +76,21 @@ public final class WorkflowDefinitionGenerator {
 
         String logFilePath = settings.getLogFilePath();
         ErrorReport.open(logFilePath);
-        WorkflowDefinitionWriter writer = settings.getWorkflowDefinitionWriter();
-        writer.open();
-        try {
-            for (WorkflowDefinitionFile definitionFile : findDefinitionFiles(new File(inputFileDirPath))) {
-                writeWorkflowDefinition(definitionFile, writer);
+        DataWriter writer = settings.getDataWriter();
+        final List<WorkflowDefinitionFile> definitionFiles = findDefinitionFiles(new File(inputFileDirPath));
+        final List<WorkflowDefinition> definitions = new ArrayList<WorkflowDefinition>();
+        final WorkflowDefinitionReader reader = settings.getWorkflowDefinitionReader();
+        for (WorkflowDefinitionFile definitionFile : definitionFiles) {
+            try {
+                definitions.add(reader.load(definitionFile));
+            } catch (WorkflowDefinitionException e) {
+                ErrorReport.writeError(definitionFile.getName(), e.getMessages());
             }
+        }
+
+        try {
+            writer.write(definitions, new File(settings.getOutputFileDir()));
         } finally {
-            writer.close();
             ErrorReport.close();
         }
 

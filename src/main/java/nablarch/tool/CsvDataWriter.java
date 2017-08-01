@@ -1,7 +1,7 @@
-package nablarch.tool.statemachine;
+package nablarch.tool;
 
 import java.io.File;
-import java.io.FileWriter;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.charset.Charset;
 import java.util.HashMap;
@@ -21,15 +21,15 @@ import nablarch.integration.workflow.definition.SequenceFlow;
 import nablarch.integration.workflow.definition.Task;
 import nablarch.integration.workflow.definition.WorkflowDefinition;
 import nablarch.integration.workflow.definition.loader.WorkflowDefinitionSchema;
-import nablarch.tool.DefinitionWriter;
 import nablarch.tool.workflow.WorkflowDefinitionGeneratorSequenceFlow;
+import nablarch.tool.workflow.WorkflowDefinitionGeneratorTask;
 
 /**
- * ステートマシン定義データをCSVファイルに出力する{@link DefinitionWriter}実装クラス。
+ * {@link WorkflowDefinition}に定義されたデータをCSVファイルに出力する{@link DataWriter}実装クラス。
  *
  * @author Naoki Yamamoto
  */
-public class StateMachineDefinitionWriter implements DefinitionWriter {
+public class CsvDataWriter implements DataWriter {
 
     @Override
     public void write(final List<WorkflowDefinition> workflowDefinitions, final File outputDir) {
@@ -60,7 +60,7 @@ public class StateMachineDefinitionWriter implements DefinitionWriter {
         final File file = new File(outputDir, schema.getWorkflowDefinitionTableName() + ".csv");
         ObjectMapper<Map> mapper = null;
         try {
-            mapper = ObjectMapperFactory.create(Map.class, new FileWriter(file), CsvDataBindConfig.DEFAULT
+            mapper = ObjectMapperFactory.create(Map.class, new FileOutputStream(file), CsvDataBindConfig.DEFAULT
                     .withCharset(Charset.forName("Windows-31j"))
                     .withHeaderTitles(
                             schema.getWorkflowIdColumnName(),
@@ -92,7 +92,7 @@ public class StateMachineDefinitionWriter implements DefinitionWriter {
         final File file = new File(outputDir, schema.getLaneTableName() + ".csv");
         ObjectMapper<Map> mapper = null;
         try {
-            mapper = ObjectMapperFactory.create(Map.class, new FileWriter(file), CsvDataBindConfig.DEFAULT
+            mapper = ObjectMapperFactory.create(Map.class, new FileOutputStream(file), CsvDataBindConfig.DEFAULT
                     .withCharset(Charset.forName("Windows-31j"))
                     .withHeaderTitles(
                             schema.getWorkflowIdColumnName(),
@@ -126,7 +126,7 @@ public class StateMachineDefinitionWriter implements DefinitionWriter {
         final File flowNodeFile = new File(outputDir, schema.getFlowNodeTableName() + ".csv");
         ObjectMapper<Map> flowNodeMapper = null;
         try {
-            flowNodeMapper = ObjectMapperFactory.create(Map.class, new FileWriter(flowNodeFile),
+            flowNodeMapper = ObjectMapperFactory.create(Map.class, new FileOutputStream(flowNodeFile),
                     CsvDataBindConfig.DEFAULT
                             .withCharset(Charset.forName("Windows-31j"))
                             .withHeaderTitles(
@@ -197,7 +197,7 @@ public class StateMachineDefinitionWriter implements DefinitionWriter {
 
         ObjectMapper<Map> eventMapper = null;
         try {
-            eventMapper = ObjectMapperFactory.create(Map.class, new FileWriter(eventFile), CsvDataBindConfig.DEFAULT
+            eventMapper = ObjectMapperFactory.create(Map.class, new FileOutputStream(eventFile), CsvDataBindConfig.DEFAULT
                     .withCharset(Charset.forName("Windows-31j"))
                     .withHeaderTitles(
                             schema.getWorkflowIdColumnName(),
@@ -232,7 +232,7 @@ public class StateMachineDefinitionWriter implements DefinitionWriter {
         final File gatewayFile = new File(outputDir, schema.getGatewayTableName() + ".csv");
         ObjectMapper<Map> gatewayMapper = null;
         try {
-            gatewayMapper = ObjectMapperFactory.create(Map.class, new FileWriter(gatewayFile), CsvDataBindConfig.DEFAULT
+            gatewayMapper = ObjectMapperFactory.create(Map.class, new FileOutputStream(gatewayFile), CsvDataBindConfig.DEFAULT
                     .withCharset(Charset.forName("Windows-31j"))
                     .withHeaderTitles(
                             schema.getWorkflowIdColumnName(),
@@ -266,7 +266,7 @@ public class StateMachineDefinitionWriter implements DefinitionWriter {
         final File taskFile = new File(outputDir, schema.getTaskTableName() + ".csv");
         ObjectMapper<Map> taskMapper = null;
         try {
-            taskMapper = ObjectMapperFactory.create(Map.class, new FileWriter(taskFile), CsvDataBindConfig.DEFAULT
+            taskMapper = ObjectMapperFactory.create(Map.class, new FileOutputStream(taskFile), CsvDataBindConfig.DEFAULT
                     .withCharset(Charset.forName("Windows-31j"))
                     .withHeaderTitles(
                             schema.getWorkflowIdColumnName(),
@@ -282,7 +282,7 @@ public class StateMachineDefinitionWriter implements DefinitionWriter {
                     taskMap.put(schema.getVersionColumnName(), definition.getVersion());
                     taskMap.put(schema.getFlowNodeIdColumnName(), task.getFlowNodeId());
                     taskMap.put(schema.getMultiInstanceTypeColumnName(), task.getMultiInstanceType());
-                    taskMap.put(schema.getCompletionConditionColumnName(), null);
+                    taskMap.put(schema.getCompletionConditionColumnName(), ((WorkflowDefinitionGeneratorTask) task).getCondition());
                     taskMapper.write(taskMap);
                 }
             }
@@ -305,7 +305,7 @@ public class StateMachineDefinitionWriter implements DefinitionWriter {
         ObjectMapper<Map> triggerMapper = null;
 
         try {
-            boundaryMapper = ObjectMapperFactory.create(Map.class, new FileWriter(boundaryFile),
+            boundaryMapper = ObjectMapperFactory.create(Map.class, new FileOutputStream(boundaryFile),
                     CsvDataBindConfig.DEFAULT
                             .withCharset(Charset.forName("Windows-31j"))
                             .withHeaderTitles(
@@ -315,11 +315,14 @@ public class StateMachineDefinitionWriter implements DefinitionWriter {
                                     schema.getBoundaryEventTriggerIdColumnName(),
                                     schema.getAttachedTaskIdColumnName()));
 
-            triggerMapper = ObjectMapperFactory.create(Map.class, new FileWriter(triggerFile), CsvDataBindConfig.DEFAULT.withHeaderTitles(
-                    schema.getWorkflowIdColumnName(),
-                    schema.getVersionColumnName(),
-                    schema.getBoundaryEventTriggerIdColumnName(),
-                    schema.getBoundaryEventTriggerNameColumnName()));
+            triggerMapper = ObjectMapperFactory.create(Map.class, new FileOutputStream(triggerFile),
+                    CsvDataBindConfig.DEFAULT
+                            .withCharset(Charset.forName("Windows-31j"))
+                            .withHeaderTitles(
+                                    schema.getWorkflowIdColumnName(),
+                                    schema.getVersionColumnName(),
+                                    schema.getBoundaryEventTriggerIdColumnName(),
+                                    schema.getBoundaryEventTriggerNameColumnName()));
 
             for (WorkflowDefinition definition : definitions) {
                 for (BoundaryEvent boundary : definition.getBoundaryEvents()) {
@@ -356,7 +359,7 @@ public class StateMachineDefinitionWriter implements DefinitionWriter {
         ObjectMapper<Map> sequenceFlowMapper = null;
 
         try {
-            sequenceFlowMapper = ObjectMapperFactory.create(Map.class, new FileWriter(sequenceFlowFile),
+            sequenceFlowMapper = ObjectMapperFactory.create(Map.class, new FileOutputStream(sequenceFlowFile),
                     CsvDataBindConfig.DEFAULT
                             .withCharset(Charset.forName("Windows-31j"))
                             .withHeaderTitles(

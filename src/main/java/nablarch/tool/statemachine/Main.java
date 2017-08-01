@@ -11,8 +11,9 @@ import nablarch.core.repository.SystemRepository;
 import nablarch.core.repository.di.DiContainer;
 import nablarch.core.repository.di.config.xml.XmlComponentDefinitionLoader;
 import nablarch.integration.workflow.definition.WorkflowDefinition;
+import nablarch.tool.CsvDataWriter;
 import nablarch.tool.DefinitionCreator;
-import nablarch.tool.DefinitionWriter;
+import nablarch.tool.DataWriter;
 import nablarch.tool.workflow.WorkflowDefinitionFile;
 
 /**
@@ -74,7 +75,7 @@ public class Main {
             }
         }
         if (isValid) {
-            final DefinitionWriter writer = new StateMachineDefinitionWriter();
+            final DataWriter writer = new CsvDataWriter();
             writer.write(workflowDefinitions, outputDir);
         }
     }

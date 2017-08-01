@@ -3,7 +3,6 @@ package nablarch.tool.statemachine;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.io.FileReader;
 import java.io.InputStreamReader;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
@@ -12,7 +11,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import javax.xml.bind.JAXB;
-import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBElement;
 
 import nablarch.core.repository.SystemRepository;
@@ -29,6 +27,7 @@ import nablarch.integration.workflow.definition.WorkflowDefinition;
 import nablarch.tool.DefinitionCreator;
 import nablarch.tool.workflow.WorkflowDefinitionFile;
 import nablarch.tool.workflow.WorkflowDefinitionGeneratorSequenceFlow;
+import nablarch.tool.workflow.WorkflowDefinitionGeneratorTask;
 import org.omg.spec.bpmn._20100524.model.TBoundaryEvent;
 import org.omg.spec.bpmn._20100524.model.TDefinitions;
 import org.omg.spec.bpmn._20100524.model.TEndEvent;
@@ -201,8 +200,8 @@ public class StateMachineDefinitionCreator implements DefinitionCreator {
         for (TFlowElement element : flowElements) {
             if (element instanceof TTask) {
                 final TTask task = (TTask) element;
-                tasks.add(new Task(task.getId(), task.getName(), laneIdMap.get(task.getId()),
-                        MultiInstanceType.NONE.toString(), null, null));
+                tasks.add(new WorkflowDefinitionGeneratorTask(task.getId(), task.getName(), laneIdMap.get(task.getId()),
+                        MultiInstanceType.NONE.toString(), null));
             }
         }
         return tasks;

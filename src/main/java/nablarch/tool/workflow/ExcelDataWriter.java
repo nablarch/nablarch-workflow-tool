@@ -4,11 +4,14 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
+import nablarch.core.repository.SystemRepository;
+import nablarch.tool.DataWriter;
 import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
@@ -27,103 +30,67 @@ import nablarch.integration.workflow.definition.loader.WorkflowDefinitionSchema;
 
 /**
  * ワークフロー定義情報をExcelに出力するクラス。
+ * <p>
  * マスターデータセットアップで利用可能な形式で出力する。
  *
  * @author Satoshi Taromaru
  * @since 1.4.2
  */
-public class WorkflowDefinitionExcelWriter implements WorkflowDefinitionWriter {
+public class ExcelDataWriter implements DataWriter {
 
-    /**
-     * テーブル定義。
-     */
-    private WorkflowDefinitionSchema workflowDefinitionSchema;
-
-    /**
-     * 出力先ファイルパス。
-     */
-    private String outputFilePath;
-
-    /**
-     * 出力先ブック。
-     */
-    private HSSFWorkbook book;
-
-    /**
-     * 出力先ストリーム。
-     */
-    private FileOutputStream out;
-
-    /**
-     * ワークフロー定義情報出力フラグ。
-     */
-    private boolean writeFlg = false;
-
-    /**
-     * 出力先ファイルパスを設定する。
-     *
-     * @param outputFilePath 出力先ファイルパス
-     */
-    public void setOutputFilePath(String outputFilePath) {
-        this.outputFilePath = outputFilePath;
-    }
+    /** 出力するExcelファイル名 */
+    private static final String DATA_FILE_NAME = "workflowDefinitionData.xls";
 
     @Override
-    public void open() {
-        book = new HSSFWorkbook();
+    public void write(final List<WorkflowDefinition> workflowDefinitions, final File outputDir) {
+        final HSSFWorkbook book = new HSSFWorkbook();
+        final WorkflowDefinitionSchema schema = SystemRepository.get("workflowDefinitionSchema");
+        for (WorkflowDefinition definition : workflowDefinitions) {
+            writeWorkflowDefinition(book, definition, schema);
+            writeTask(book, definition, schema);
+            writeLane(book, definition, schema);
+            writeFlowNode(book, definition, schema);
+            writeBoundaryEvent(book, definition, schema);
+            writeEvent(book, definition, schema);
+            writeGateway(book, definition, schema);
+            writeBoundaryEventTrigger(book, definition, schema);
+            writeSequenceFlow(book, definition, schema);
+        }
+
+        final OutputStream out = createOutputStream(outputDir);
         try {
-            out = new FileOutputStream(outputFilePath);
+            book.write(out);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        } finally {
+            FileUtil.closeQuietly(out);
+        }
+    }
+
+    /**
+     * 出力ストリームを生成する。
+     *
+     * @param outputDir 出力先ディレクトリ
+     * @return 出力ストリーム
+     */
+    private OutputStream createOutputStream(final File outputDir) {
+        try {
+            return new FileOutputStream(new File(outputDir, DATA_FILE_NAME));
         } catch (FileNotFoundException e) {
             throw new RuntimeException(e);
         }
     }
 
-    @Override
-    public void close() {
-        try {
-            book.write(out);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-        FileUtil.closeQuietly(out);
-        if (!writeFlg) {
-            FileUtil.deleteFile(new File(outputFilePath));
-        }
-    }
-
-    /**
-     * テーブル定義を設定する。
-     *
-     * @param workflowDefinitionSchema テーブル定義
-     */
-    public void setWorkflowDefinitionSchema(WorkflowDefinitionSchema workflowDefinitionSchema) {
-        this.workflowDefinitionSchema = workflowDefinitionSchema;
-    }
-
-    @Override
-    public void write(WorkflowDefinition workflowDefinition) {
-        writeFlg = true;
-        writeWorkflowDefinition(book, workflowDefinition);
-        writeTask(book, workflowDefinition);
-        writeLane(book, workflowDefinition);
-        writeFlowNode(book, workflowDefinition);
-        writeBoundaryEvent(book, workflowDefinition);
-        writeEvent(book, workflowDefinition);
-        writeGateway(book, workflowDefinition);
-        writeBoundaryEventTrigger(book, workflowDefinition);
-        writeSequenceFlow(book, workflowDefinition);
-    }
-
     /**
      * ワークフロー定義テーブルの情報をブックに書き込む。
-     *
      * @param book               書き込み対象ブック
      * @param workflowDefinition ワークフロー定義
+     * @param schema ワークフローテーブル定義
      */
-    private void writeWorkflowDefinition(HSSFWorkbook book, WorkflowDefinition workflowDefinition) {
-        String tableName = workflowDefinitionSchema.getWorkflowDefinitionTableName();
-        HSSFSheet sheet = getSheet(book, tableName, workflowDefinitionSchema.getWorkflowIdColumnName(), workflowDefinitionSchema.getVersionColumnName(),
-                workflowDefinitionSchema.getWorkflowNameColumnName(), workflowDefinitionSchema.getEffectiveDateColumnName());
+    private void writeWorkflowDefinition(HSSFWorkbook book, WorkflowDefinition workflowDefinition, WorkflowDefinitionSchema schema) {
+        String tableName = schema.getWorkflowDefinitionTableName();
+        HSSFSheet sheet = getSheet(book, tableName, schema.getWorkflowIdColumnName(), schema.getVersionColumnName(),
+                schema.getWorkflowNameColumnName(), schema.getEffectiveDateColumnName());
 
         HSSFRow dataRow = sheet.createRow(sheet.getLastRowNum() + 1);
         dataRow.createCell(0).setCellValue(workflowDefinition.getWorkflowId());
@@ -139,15 +106,15 @@ public class WorkflowDefinitionExcelWriter implements WorkflowDefinitionWriter {
 
     /**
      * タスクテーブルの情報をブックに書き込む。
-     *
      * @param book               書き込み対象ブック
      * @param workflowDefinition ワークフロー定義
+     * @param schema ワークフローテーブル定義
      */
-    private void writeTask(HSSFWorkbook book, WorkflowDefinition workflowDefinition) {
-        String tableName = workflowDefinitionSchema.getTaskTableName();
-        HSSFSheet sheet = getSheet(book, tableName, workflowDefinitionSchema.getWorkflowIdColumnName(), workflowDefinitionSchema.getVersionColumnName(),
-                workflowDefinitionSchema.getFlowNodeIdColumnName(), workflowDefinitionSchema.getMultiInstanceTypeColumnName(),
-                workflowDefinitionSchema.getCompletionConditionColumnName());
+    private void writeTask(HSSFWorkbook book, WorkflowDefinition workflowDefinition, WorkflowDefinitionSchema schema) {
+        String tableName = schema.getTaskTableName();
+        HSSFSheet sheet = getSheet(book, tableName, schema.getWorkflowIdColumnName(), schema.getVersionColumnName(),
+                schema.getFlowNodeIdColumnName(), schema.getMultiInstanceTypeColumnName(),
+                schema.getCompletionConditionColumnName());
 
         List<Task> tasks = new ArrayList<Task>(workflowDefinition.getTasks());
         Collections.sort(tasks, new Comparator<FlowNode>() {
@@ -174,14 +141,14 @@ public class WorkflowDefinitionExcelWriter implements WorkflowDefinitionWriter {
 
     /**
      * レーンテーブルの情報をブックに書き込む。
-     *
      * @param book               書き込み対象ブック
      * @param workflowDefinition ワークフロー定義
+     * @param schema ワークフローテーブル定義
      */
-    private void writeLane(HSSFWorkbook book, WorkflowDefinition workflowDefinition) {
-        String tableName = workflowDefinitionSchema.getLaneTableName();
-        HSSFSheet sheet = getSheet(book, tableName, workflowDefinitionSchema.getWorkflowIdColumnName(), workflowDefinitionSchema.getVersionColumnName(),
-                workflowDefinitionSchema.getLaneIdColumnName(), workflowDefinitionSchema.getLaneNameColumnName());
+    private void writeLane(HSSFWorkbook book, WorkflowDefinition workflowDefinition, WorkflowDefinitionSchema schema) {
+        String tableName = schema.getLaneTableName();
+        HSSFSheet sheet = getSheet(book, tableName, schema.getWorkflowIdColumnName(), schema.getVersionColumnName(),
+                schema.getLaneIdColumnName(), schema.getLaneNameColumnName());
 
         List<Lane> lanes = new ArrayList<Lane>(workflowDefinition.getLanes());
         Collections.sort(lanes, new Comparator<Lane>() {
@@ -207,15 +174,15 @@ public class WorkflowDefinitionExcelWriter implements WorkflowDefinitionWriter {
 
     /**
      * 境界イベントテーブルの情報をブックに書き込む。
-     *
      * @param book               書き込み対象ブック
      * @param workflowDefinition ワークフロー定義
+     * @param schema ワークフローテーブル定義
      */
-    private void writeBoundaryEvent(HSSFWorkbook book, WorkflowDefinition workflowDefinition) {
-        String tableName = workflowDefinitionSchema.getBoundaryEventTableName();
-        HSSFSheet sheet = getSheet(book, tableName, workflowDefinitionSchema.getWorkflowIdColumnName(), workflowDefinitionSchema.getVersionColumnName(),
-                workflowDefinitionSchema.getFlowNodeIdColumnName(), workflowDefinitionSchema.getBoundaryEventTriggerIdColumnName(),
-                workflowDefinitionSchema.getAttachedTaskIdColumnName());
+    private void writeBoundaryEvent(HSSFWorkbook book, WorkflowDefinition workflowDefinition, WorkflowDefinitionSchema schema) {
+        String tableName = schema.getBoundaryEventTableName();
+        HSSFSheet sheet = getSheet(book, tableName, schema.getWorkflowIdColumnName(), schema.getVersionColumnName(),
+                schema.getFlowNodeIdColumnName(), schema.getBoundaryEventTriggerIdColumnName(),
+                schema.getAttachedTaskIdColumnName());
 
         List<BoundaryEvent> boundaryEvents = new ArrayList<BoundaryEvent>(workflowDefinition.getBoundaryEvents());
         Collections.sort(boundaryEvents, new Comparator<FlowNode>() {
@@ -242,14 +209,14 @@ public class WorkflowDefinitionExcelWriter implements WorkflowDefinitionWriter {
 
     /**
      * イベントテーブルの情報をブックに書き込む。
-     *
      * @param book               書き込み対象ブック
      * @param workflowDefinition ワークフロー定義
+     * @param schema ワークフローテーブル定義
      */
-    private void writeEvent(HSSFWorkbook book, WorkflowDefinition workflowDefinition) {
-        String tableName = workflowDefinitionSchema.getEventTableName();
-        HSSFSheet sheet = getSheet(book, tableName, workflowDefinitionSchema.getWorkflowIdColumnName(), workflowDefinitionSchema.getVersionColumnName(),
-                workflowDefinitionSchema.getFlowNodeIdColumnName(), workflowDefinitionSchema.getEventTypeColumnName());
+    private void writeEvent(HSSFWorkbook book, WorkflowDefinition workflowDefinition, WorkflowDefinitionSchema schema) {
+        String tableName = schema.getEventTableName();
+        HSSFSheet sheet = getSheet(book, tableName, schema.getWorkflowIdColumnName(), schema.getVersionColumnName(),
+                schema.getFlowNodeIdColumnName(), schema.getEventTypeColumnName());
 
         List<Event> events = new ArrayList<Event>(workflowDefinition.getEvents());
         Collections.sort(events, new Comparator<FlowNode>() {
@@ -274,14 +241,14 @@ public class WorkflowDefinitionExcelWriter implements WorkflowDefinitionWriter {
 
     /**
      * ゲートウェイテーブルの情報をブックに書き込む。
-     *
      * @param book               書き込み対象ブック
      * @param workflowDefinition ワークフロー定義
+     * @param schema ワークフローテーブル定義
      */
-    private void writeGateway(HSSFWorkbook book, WorkflowDefinition workflowDefinition) {
-        String tableName = workflowDefinitionSchema.getGatewayTableName();
-        HSSFSheet sheet = getSheet(book, tableName, workflowDefinitionSchema.getWorkflowIdColumnName(), workflowDefinitionSchema.getVersionColumnName(),
-                workflowDefinitionSchema.getFlowNodeIdColumnName(), workflowDefinitionSchema.getGatewayTypeColumnName());
+    private void writeGateway(HSSFWorkbook book, WorkflowDefinition workflowDefinition, WorkflowDefinitionSchema schema) {
+        String tableName = schema.getGatewayTableName();
+        HSSFSheet sheet = getSheet(book, tableName, schema.getWorkflowIdColumnName(), schema.getVersionColumnName(),
+                schema.getFlowNodeIdColumnName(), schema.getGatewayTypeColumnName());
 
         List<Gateway> gateways = new ArrayList<Gateway>(workflowDefinition.getGateways());
         Collections.sort(gateways, new Comparator<FlowNode>() {
@@ -306,14 +273,14 @@ public class WorkflowDefinitionExcelWriter implements WorkflowDefinitionWriter {
 
     /**
      * 境界イベントトリガーテーブルの情報をブックに書き込む。
-     *
      * @param book               書き込み対象ブック
      * @param workflowDefinition ワークフロー定義
+     * @param schema ワークフローテーブル定義
      */
-    private void writeBoundaryEventTrigger(HSSFWorkbook book, WorkflowDefinition workflowDefinition) {
-        String tableName = workflowDefinitionSchema.getEventTriggerTableName();
-        HSSFSheet sheet = getSheet(book, tableName, workflowDefinitionSchema.getWorkflowIdColumnName(), workflowDefinitionSchema.getVersionColumnName(),
-                workflowDefinitionSchema.getBoundaryEventTriggerIdColumnName(), workflowDefinitionSchema.getBoundaryEventTriggerNameColumnName());
+    private void writeBoundaryEventTrigger(HSSFWorkbook book, WorkflowDefinition workflowDefinition, WorkflowDefinitionSchema schema) {
+        String tableName = schema.getEventTriggerTableName();
+        HSSFSheet sheet = getSheet(book, tableName, schema.getWorkflowIdColumnName(), schema.getVersionColumnName(),
+                schema.getBoundaryEventTriggerIdColumnName(), schema.getBoundaryEventTriggerNameColumnName());
 
         List<String> writeList = new ArrayList<String>();
         List<BoundaryEvent> boundaryEvents = new ArrayList<BoundaryEvent>(workflowDefinition.getBoundaryEvents());
@@ -344,16 +311,16 @@ public class WorkflowDefinitionExcelWriter implements WorkflowDefinitionWriter {
 
     /**
      * シーケンスフローテーブルの情報をブックに書き込む。
-     *
      * @param book               書き込み対象ブック
      * @param workflowDefinition ワークフロー定義
+     * @param schema ワークフローテーブル定義
      */
-    private void writeSequenceFlow(HSSFWorkbook book, WorkflowDefinition workflowDefinition) {
-        String tableName = workflowDefinitionSchema.getSequenceFlowTableName();
-        HSSFSheet sheet = getSheet(book, tableName, workflowDefinitionSchema.getWorkflowIdColumnName(), workflowDefinitionSchema.getVersionColumnName(),
-                workflowDefinitionSchema.getSequenceFlowIdColumnName(), workflowDefinitionSchema.getSourceFlowNodeIdColumnName(),
-                workflowDefinitionSchema.getTargetFlowNodeIdColumnName(), workflowDefinitionSchema.getFlowProceedConditionColumnName(),
-                workflowDefinitionSchema.getSequenceFlowNameColumnName());
+    private void writeSequenceFlow(HSSFWorkbook book, WorkflowDefinition workflowDefinition, WorkflowDefinitionSchema schema) {
+        String tableName = schema.getSequenceFlowTableName();
+        HSSFSheet sheet = getSheet(book, tableName, schema.getWorkflowIdColumnName(), schema.getVersionColumnName(),
+                schema.getSequenceFlowIdColumnName(), schema.getSourceFlowNodeIdColumnName(),
+                schema.getTargetFlowNodeIdColumnName(), schema.getFlowProceedConditionColumnName(),
+                schema.getSequenceFlowNameColumnName());
 
         List<SequenceFlow> sequenceFlows = new ArrayList<SequenceFlow>(workflowDefinition.getSequenceFlows());
         Collections.sort(sequenceFlows, new Comparator<SequenceFlow>() {
@@ -385,15 +352,15 @@ public class WorkflowDefinitionExcelWriter implements WorkflowDefinitionWriter {
 
     /**
      * フローノード定義テーブルの情報をブックに書き込む。
-     *
      * @param book               書き込み対象ブック
      * @param workflowDefinition ワークフロー定義
+     * @param schema ワークフローテーブル定義
      */
-    private void writeFlowNode(HSSFWorkbook book, WorkflowDefinition workflowDefinition) {
-        String tableName = workflowDefinitionSchema.getFlowNodeTableName();
-        HSSFSheet sheet = getSheet(book, tableName, workflowDefinitionSchema.getWorkflowIdColumnName(), workflowDefinitionSchema.getVersionColumnName(),
-                workflowDefinitionSchema.getFlowNodeIdColumnName(), workflowDefinitionSchema.getLaneIdColumnName(),
-                workflowDefinitionSchema.getFlowNodeNameColumnName());
+    private void writeFlowNode(HSSFWorkbook book, WorkflowDefinition workflowDefinition, WorkflowDefinitionSchema schema) {
+        String tableName = schema.getFlowNodeTableName();
+        HSSFSheet sheet = getSheet(book, tableName, schema.getWorkflowIdColumnName(), schema.getVersionColumnName(),
+                schema.getFlowNodeIdColumnName(), schema.getLaneIdColumnName(),
+                schema.getFlowNodeNameColumnName());
 
         List<Event> events = new ArrayList<Event>(workflowDefinition.getEvents());
         Collections.sort(events, new Comparator<FlowNode>() {
@@ -478,7 +445,7 @@ public class WorkflowDefinitionExcelWriter implements WorkflowDefinitionWriter {
     private HSSFSheet getSheet(HSSFWorkbook book, String tableName, String... columns) {
         HSSFSheet sheet = book.getSheet(tableName);
         if (sheet == null) {
-            sheet = createSheet(tableName, columns);
+            sheet = createSheet(book, tableName, columns);
         }
         return sheet;
     }
@@ -490,7 +457,7 @@ public class WorkflowDefinitionExcelWriter implements WorkflowDefinitionWriter {
      * @param columns   カラム名
      * @return シート
      */
-    private HSSFSheet createSheet(String tableName, String... columns) {
+    private HSSFSheet createSheet(HSSFWorkbook book, String tableName, String... columns) {
         HSSFSheet sheet;
         sheet = book.createSheet(tableName);
         sheet.createRow(0).createCell(0).setCellValue("SETUP_TABLE=" + tableName);

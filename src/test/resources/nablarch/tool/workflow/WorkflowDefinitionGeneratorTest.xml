@@ -7,10 +7,14 @@
     <component name="workflowDefinitionGeneratorSettings" class="nablarch.tool.workflow.WorkflowDefinitionGeneratorSettings">
         <property name="inputFileDir" value="${inputFileDir}"/>
         <property name="inputFileExtensions" value="${inputFileExtension}"/>
+        <property name="outputFileDir" value="${outputFileDir}">
+        </property>
         <property name="logFilePath" value="${logFilePath}"/>
         <property name="workflowIdColumnLength" value="${workflowIdColumnLength}"/>
         <property name="workflowDefinitionReader" ref="workflowDefinitionReader"/>
-        <property name="workflowDefinitionWriter" ref="workflowDefinitionWriter"/>
+        <property name="dataWriter">
+            <component class="nablarch.tool.workflow.ExcelDataWriter" />
+        </property>
     </component>
 
     <component name="workflowDefinitionReader" class="nablarch.tool.workflow.bpmn.BpmnWorkflowDefinitionReader"/>
@@ -19,11 +23,6 @@
         <property name="laneIdColumnLength" value="${laneIdColumnLength}"/>
         <property name="flowNodeIdColumnLength" value="${flowNodeIdColumnLength}"/>
         <property name="boundaryEventTriggerIdColumnLength" value="${boundaryEventTriggerIdColumnLength}"/>
-    </component>
-
-    <component name="workflowDefinitionWriter" class="nablarch.tool.workflow.WorkflowDefinitionExcelWriter">
-        <property name="workflowDefinitionSchema" ref="workflowDefinitionSchema"/>
-        <property name="outputFilePath" value="${outputFilePath}"/>
     </component>
 
     <map name="flowProceedCondition">

@@ -1,13 +1,17 @@
 package nablarch.tool.workflow;
 
+import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import nablarch.test.support.SystemRepositoryResource;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
-import org.junit.After;
+import org.hamcrest.Matchers;
+import org.junit.Rule;
 import org.junit.Test;
 
 import nablarch.core.repository.di.DiContainer;
@@ -23,43 +27,43 @@ import nablarch.integration.workflow.definition.SequenceFlow;
 import nablarch.integration.workflow.definition.Task;
 import nablarch.integration.workflow.definition.WorkflowDefinition;
 import nablarch.integration.workflow.definition.loader.WorkflowDefinitionSchema;
+import org.junit.rules.ExpectedException;
+import org.junit.rules.TemporaryFolder;
 
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertThat;
 
 /**
- * {@link WorkflowDefinitionExcelWriter}のテストクラス。
+ * {@link ExcelDataWriter}のテストクラス。
  *
  * @author Satoshi Taromaru
  * @since 1.4.2
  */
-public class WorkflowDefinitionExcelWriterTest {
+public class ExcelDataWriterTest {
 
-    /**
-     * 事後処理。
-     * 設定したプロパティを初期化する。
-     */
-    @After
-    public void tearDown() {
-        System.clearProperty("outputFilePath");
-    }
+    @Rule
+    public SystemRepositoryResource systemRepositoryResource =
+            new SystemRepositoryResource("nablarch/tool/workflow/WorkflowDefinitionGeneratorTest.xml");
 
+    @Rule
+    public ExpectedException expectedException = ExpectedException.none();
+
+    @Rule
+    public TemporaryFolder temporaryFolder = new TemporaryFolder();
+
+    /** テスト対象 */
+    private ExcelDataWriter sut = new ExcelDataWriter();
 
     /**
      * 出力ファイルパスが不正な場合、RuntimeExceptionが送出されること。
      *
      * @throws Exception 想定外エラー
      */
-    @Test(expected = RuntimeException.class)
+    @Test
     public void testOpen() throws Exception {
-        System.setProperty("outputFilePath", "invalidDir/MASTER_DATA_WF.xls");
-        String uri = "classpath:nablarch/tool/workflow/WorkflowDefinitionGeneratorTest.xml";
-        DiContainer container = new DiContainer(new XmlComponentDefinitionLoader(uri));
-
-        // テスト実施
-        WorkflowDefinitionGeneratorSettings settings = container.getComponentByName("workflowDefinitionGeneratorSettings");
-        WorkflowDefinitionExcelWriter sut = (WorkflowDefinitionExcelWriter) settings.getWorkflowDefinitionWriter();
-        sut.open();
+        expectedException.expect(RuntimeException.class);
+        expectedException.expectCause(Matchers.<Throwable>instanceOf(FileNotFoundException.class));
+        sut.write(new ArrayList<WorkflowDefinition>(), new File("invalid"));
     }
 
     /**
@@ -106,24 +110,17 @@ public class WorkflowDefinitionExcelWriterTest {
                 new WorkflowDefinitionGeneratorSequenceFlow("flow7", "to UserTask2 from Gateway", "exclusivegateway1", "usertask2", "nablarch.tool.workflow.Condition3"));
         sequenceFlows.add(new WorkflowDefinitionGeneratorSequenceFlow("flow8", "to UserTask2 from Boundary Event", "boundarymessage2", "usertask2", ""));
         workflowDefinition.setSequenceFlows(sequenceFlows);
-
-        String outputFilePath = "src/test/work/MASTER_DATA_WF_ALL_SUPPORT.xls";
-        System.setProperty("outputFilePath", outputFilePath);
-        String uri = "classpath:nablarch/tool/workflow/WorkflowDefinitionGeneratorTest.xml";
-        DiContainer container = new DiContainer(new XmlComponentDefinitionLoader(uri));
+        List<WorkflowDefinition> definitions = new ArrayList<WorkflowDefinition>();
+        definitions.add(workflowDefinition);
 
         // テスト実施
-        WorkflowDefinitionGeneratorSettings settings = container.getComponentByName("workflowDefinitionGeneratorSettings");
-        WorkflowDefinitionExcelWriter sut = (WorkflowDefinitionExcelWriter) settings.getWorkflowDefinitionWriter();
-        sut.open();
-        sut.write(workflowDefinition);
-        sut.close();
+        sut.write(definitions, temporaryFolder.getRoot());
 
         // 検証
-        HSSFWorkbook outBook = new HSSFWorkbook(new FileInputStream(outputFilePath));
+        HSSFWorkbook outBook = new HSSFWorkbook(new FileInputStream(temporaryFolder.getRoot().getPath() + "/workflowDefinitionData.xls"));
         SimpleTableReader tableReader = new SimpleTableReader().setHeaderRowNum(1);
 
-        WorkflowDefinitionSchema schema = container.getComponentByName("workflowDefinitionSchema");
+        WorkflowDefinitionSchema schema = systemRepositoryResource.getComponent("workflowDefinitionSchema");
         assertThat(tableReader.read(outBook.getSheet(schema.getWorkflowDefinitionTableName())), is(getExpectedWorkflowDefinitionData(schema)));
         assertThat(tableReader.read(outBook.getSheet(schema.getLaneTableName())), is(getExpectedLaneData(schema)));
         assertThat(tableReader.read(outBook.getSheet(schema.getFlowNodeTableName())), is(getExpectedFlowNodeData(schema)));
@@ -174,24 +171,17 @@ public class WorkflowDefinitionExcelWriterTest {
         sequenceFlows.add(new WorkflowDefinitionGeneratorSequenceFlow("flow6", "to UserTask1 from Boundary Event", "boundarymessage1", "usertask1", ""));
         sequenceFlows.add(new WorkflowDefinitionGeneratorSequenceFlow("flow8", "to UserTask2 from Boundary Event", "boundarymessage2", "usertask2", ""));
         workflowDefinition.setSequenceFlows(sequenceFlows);
-
-        String outputFilePath = "src/test/work/MASTER_DATA_WF_NO_GATEWAY.xls";
-        System.setProperty("outputFilePath", outputFilePath);
-        String uri = "classpath:nablarch/tool/workflow/WorkflowDefinitionGeneratorTest.xml";
-        DiContainer container = new DiContainer(new XmlComponentDefinitionLoader(uri));
+        List<WorkflowDefinition> definitions = new ArrayList<WorkflowDefinition>();
+        definitions.add(workflowDefinition);
 
         // テスト実施
-        WorkflowDefinitionGeneratorSettings settings = container.getComponentByName("workflowDefinitionGeneratorSettings");
-        WorkflowDefinitionExcelWriter target = (WorkflowDefinitionExcelWriter) settings.getWorkflowDefinitionWriter();
-        target.open();
-        target.write(workflowDefinition);
-        target.close();
+        sut.write(definitions, temporaryFolder.getRoot());
 
         // 検証
-        HSSFWorkbook outBook = new HSSFWorkbook(new FileInputStream(outputFilePath));
+        HSSFWorkbook outBook = new HSSFWorkbook(new FileInputStream(temporaryFolder.getRoot().getPath() + "/workflowDefinitionData.xls"));
         SimpleTableReader tableReader = new SimpleTableReader().setHeaderRowNum(1);
 
-        WorkflowDefinitionSchema schema = container.getComponentByName("workflowDefinitionSchema");
+        WorkflowDefinitionSchema schema = systemRepositoryResource.getComponent("workflowDefinitionSchema");
         assertThat(tableReader.read(outBook.getSheet(schema.getWorkflowDefinitionTableName())), is(getExpectedWorkflowDefinitionData(schema)));
         assertThat(tableReader.read(outBook.getSheet(schema.getLaneTableName())), is(getExpectedLaneData(schema)));
         assertThat(tableReader.read(outBook.getSheet(schema.getFlowNodeTableName())), is(getExpectedFlowNodeDataNoGateway(schema)));
@@ -243,24 +233,17 @@ public class WorkflowDefinitionExcelWriterTest {
         sequenceFlows.add(
                 new WorkflowDefinitionGeneratorSequenceFlow("flow7", "to UserTask2 from Gateway", "exclusivegateway1", "usertask2", "nablarch.tool.workflow.Condition3"));
         workflowDefinition.setSequenceFlows(sequenceFlows);
-
-        String outputFilePath = "src/test/work/MASTER_DATA_WF_NO_BOUNDARY.xls";
-        System.setProperty("outputFilePath", outputFilePath);
-        String uri = "classpath:nablarch/tool/workflow/WorkflowDefinitionGeneratorTest.xml";
-        DiContainer container = new DiContainer(new XmlComponentDefinitionLoader(uri));
+        List<WorkflowDefinition> definitions = new ArrayList<WorkflowDefinition>();
+        definitions.add(workflowDefinition);
 
         // テスト実施
-        WorkflowDefinitionGeneratorSettings settings = container.getComponentByName("workflowDefinitionGeneratorSettings");
-        WorkflowDefinitionExcelWriter target = (WorkflowDefinitionExcelWriter) settings.getWorkflowDefinitionWriter();
-        target.open();
-        target.write(workflowDefinition);
-        target.close();
+        sut.write(definitions, temporaryFolder.getRoot());
 
         // 検証
-        HSSFWorkbook outBook = new HSSFWorkbook(new FileInputStream(outputFilePath));
+        HSSFWorkbook outBook = new HSSFWorkbook(new FileInputStream(temporaryFolder.getRoot().getPath() + "/workflowDefinitionData.xls"));
         SimpleTableReader tableReader = new SimpleTableReader().setHeaderRowNum(1);
 
-        WorkflowDefinitionSchema schema = container.getComponentByName("workflowDefinitionSchema");
+        WorkflowDefinitionSchema schema = systemRepositoryResource.getComponent("workflowDefinitionSchema");
         assertThat(tableReader.read(outBook.getSheet(schema.getWorkflowDefinitionTableName())), is(getExpectedWorkflowDefinitionData(schema)));
         assertThat(tableReader.read(outBook.getSheet(schema.getLaneTableName())), is(getExpectedLaneData(schema)));
         assertThat(tableReader.read(outBook.getSheet(schema.getFlowNodeTableName())), is(getExpectedFlowNodeDataNoBoundaryEvent(schema)));
@@ -633,22 +616,16 @@ public class WorkflowDefinitionExcelWriterTest {
         // 出力ファイル名と同じ名前のブックを作成
         HSSFWorkbook book = new HSSFWorkbook();
         book.createSheet("alreadySheet").createRow(0).createCell(0).setCellValue("cellValue");
-        PoiUtil.save(book, outputFilePath);
+        PoiUtil.save(book, temporaryFolder.getRoot().getPath() + '/' + "workflowDefinitionData.xml");
 
         // テスト実施
-        WorkflowDefinitionGeneratorSettings settings = container.getComponentByName("workflowDefinitionGeneratorSettings");
-        WorkflowDefinitionExcelWriter target = (WorkflowDefinitionExcelWriter) settings.getWorkflowDefinitionWriter();
-        target.open();
-        for (WorkflowDefinition workflowDefinition : createInputForSortTest()) {
-            target.write(workflowDefinition);
-        }
-        target.close();
+        sut.write(createInputForSortTest(), temporaryFolder.getRoot());
 
         // 検証
-        HSSFWorkbook outBook = new HSSFWorkbook(new FileInputStream(outputFilePath));
+        HSSFWorkbook outBook = new HSSFWorkbook(new FileInputStream(temporaryFolder.getRoot().getPath() + "/workflowDefinitionData.xls"));
         SimpleTableReader tableReader = new SimpleTableReader().setHeaderRowNum(1);
 
-        WorkflowDefinitionSchema schema = container.getComponentByName("workflowDefinitionSchema");
+        WorkflowDefinitionSchema schema = systemRepositoryResource.getComponent("workflowDefinitionSchema");
         assertThat(tableReader.read(outBook.getSheet(schema.getWorkflowDefinitionTableName())), is(getExpectedWorkflowDefinitionDataForSort(schema)));
         assertThat(tableReader.read(outBook.getSheet(schema.getLaneTableName())), is(getExpectedLaneDataForSort(schema)));
         assertThat(tableReader.read(outBook.getSheet(schema.getFlowNodeTableName())), is(getExpectedFlowNodeDataForSort(schema)));
@@ -667,26 +644,14 @@ public class WorkflowDefinitionExcelWriterTest {
      */
     @Test
     public void testSort() throws Exception {
-        // 事前処理
-        String outputFilePath = "src/test/work/MASTER_DATA_WF_SORT.xls";
-        System.setProperty("outputFilePath", outputFilePath);
-        String uri = "classpath:nablarch/tool/workflow/WorkflowDefinitionGeneratorTest.xml";
-        DiContainer container = new DiContainer(new XmlComponentDefinitionLoader(uri));
-
         // テスト実施
-        WorkflowDefinitionGeneratorSettings settings = container.getComponentByName("workflowDefinitionGeneratorSettings");
-        WorkflowDefinitionExcelWriter target = (WorkflowDefinitionExcelWriter) settings.getWorkflowDefinitionWriter();
-        target.open();
-        for (WorkflowDefinition workflowDefinition : createInputForSortTest()) {
-            target.write(workflowDefinition);
-        }
-        target.close();
+        sut.write(createInputForSortTest(), temporaryFolder.getRoot());
 
         // 検証
-        HSSFWorkbook outBook = new HSSFWorkbook(new FileInputStream(outputFilePath));
+        HSSFWorkbook outBook = new HSSFWorkbook(new FileInputStream(temporaryFolder.getRoot().getPath() + "/workflowDefinitionData.xls"));
         SimpleTableReader tableReader = new SimpleTableReader().setHeaderRowNum(1);
 
-        WorkflowDefinitionSchema schema = container.getComponentByName("workflowDefinitionSchema");
+        WorkflowDefinitionSchema schema = systemRepositoryResource.getComponent("workflowDefinitionSchema");
         assertThat(tableReader.read(outBook.getSheet(schema.getWorkflowDefinitionTableName())), is(getExpectedWorkflowDefinitionDataForSort(schema)));
         assertThat(tableReader.read(outBook.getSheet(schema.getLaneTableName())), is(getExpectedLaneDataForSort(schema)));
         assertThat(tableReader.read(outBook.getSheet(schema.getFlowNodeTableName())), is(getExpectedFlowNodeDataForSort(schema)));

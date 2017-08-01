@@ -1,5 +1,8 @@
 package nablarch.tool.workflow;
 
+import nablarch.tool.CsvDataWriter;
+import nablarch.tool.DataWriter;
+
 /**
  * ワークフロー定義データ生成ツールに関する各種設定値を保持するクラス。
  *
@@ -7,6 +10,9 @@ package nablarch.tool.workflow;
  * @since 1.4.2
  */
 public class WorkflowDefinitionGeneratorSettings {
+
+    /** デフォルトのワークフロー定義データ書き込みクラス */
+    private static final DataWriter DEFAULT_DATA_WRITER = new CsvDataWriter();
 
     /**
      * ワークフロー定義ファイル格納ディレクトリ
@@ -17,6 +23,11 @@ public class WorkflowDefinitionGeneratorSettings {
      * ワークフロー定義ファイルの拡張子。
      */
     private String[] inputFileExtensions;
+
+    /**
+     * ワークフロー定義データの出力先ディレクトリ
+     */
+    private String outputFileDir;
 
     /**
      * 精査エラー詳細出力用ファイルパス
@@ -34,9 +45,9 @@ public class WorkflowDefinitionGeneratorSettings {
     private WorkflowDefinitionReader workflowDefinitionReader;
 
     /**
-     * ワークフロー定義情報の書き込みクラス。
+     * ワークフロー定義データ書き込みクラス
      */
-    private WorkflowDefinitionWriter workflowDefinitionWriter;
+    private DataWriter dataWriter;
 
     /**
      * ワークフロー定義ファイル格納ディレクトリを取得する。
@@ -72,6 +83,24 @@ public class WorkflowDefinitionGeneratorSettings {
      */
     public void setInputFileExtensions(String[] inputFileExtensions) {
         this.inputFileExtensions = inputFileExtensions.clone();
+    }
+
+    /**
+     * ワークフロー定義データの出力先ディレクトリを取得する。
+     *
+     * @return ワークフロー定義データの出力先ディレクトリ
+     */
+    public String getOutputFileDir() {
+        return outputFileDir;
+    }
+
+    /**
+     * ワークフロー定義データの出力先ディレクトリを設定する。
+     *
+     * @param outputFileDir ワークフロー定義データの出力先ディレクトリ
+     */
+    public void setOutputFileDir(String outputFileDir) {
+        this.outputFileDir = outputFileDir;
     }
 
     /**
@@ -129,21 +158,21 @@ public class WorkflowDefinitionGeneratorSettings {
     }
 
     /**
-     * ワークフロー定義情報の書き込みクラスを取得する。
+     * ワークフロー定義データ書き込みクラスを取得する。
      *
-     * @return ワークフロー定義情報の書き込みクラス
+     * @return ワークフロー定義データ書き込みクラス
      */
-    public WorkflowDefinitionWriter getWorkflowDefinitionWriter() {
-        return workflowDefinitionWriter;
+    public DataWriter getDataWriter() {
+        return dataWriter == null ? DEFAULT_DATA_WRITER : dataWriter;
     }
 
     /**
-     * ワークフロー定義情報の書き込みクラスを設定する。
+     * ワークフロー定義データ書き込みクラスを設定する。
      *
-     * @param workflowDefinitionWriter ワークフロー定義情報の書き込みクラス
+     * @param dataWriter ワークフロー定義データ書き込みクラス
      */
-    public void setWorkflowDefinitionWriter(WorkflowDefinitionWriter workflowDefinitionWriter) {
-        this.workflowDefinitionWriter = workflowDefinitionWriter;
+    public void setDataWriter(DataWriter dataWriter) {
+        this.dataWriter = dataWriter;
     }
 }
 
