@@ -19,7 +19,6 @@ import org.omg.spec.bpmn._20100524.model.TEventDefinition;
 import org.omg.spec.bpmn._20100524.model.TExclusiveGateway;
 import org.omg.spec.bpmn._20100524.model.TExpression;
 import org.omg.spec.bpmn._20100524.model.TFlowElement;
-import org.omg.spec.bpmn._20100524.model.TLane;
 import org.omg.spec.bpmn._20100524.model.TLaneSet;
 import org.omg.spec.bpmn._20100524.model.TLoopCharacteristics;
 import org.omg.spec.bpmn._20100524.model.TMessage;
@@ -44,20 +43,6 @@ import nablarch.tool.workflow.WorkflowDefinitionException;
  */
 public class BpmnWorkflowDefinitionValidator {
 
-    /**
-     * レーンID桁数。
-     */
-    private int laneIdColumnLength;
-
-    /**
-     * フローノードID桁数。
-     */
-    private int flowNodeIdColumnLength;
-
-    /**
-     * 境界イベントトリガーID桁数。
-     */
-    private int boundaryEventTriggerIdColumnLength;
 
     /**
      * フロー進行条件、完了条件のクラス名、パラメータ抽出用正規表現。
@@ -137,13 +122,6 @@ public class BpmnWorkflowDefinitionValidator {
 
         List<String> errorList = new ArrayList<String>();
         List<TLaneSet> laneSet = process.getLaneSet();
-        for (TLane lane : laneSet.get(0).getLane()) {
-            String laneId = lane.getId();
-            if (laneId.length() != laneIdColumnLength) {
-                errorList.add(String.format("レーンIDの桁数がID体系で定められた桁数と異なります。IDを修正してください。"
-                        + " id = [%s] name = [%s] （設定値:%s 実際:%s）", laneId, lane.getName(), laneIdColumnLength, laneId.length()));
-            }
-        }
 
         if (!errorList.isEmpty()) {
             throw new WorkflowDefinitionException(errorList);
@@ -208,7 +186,6 @@ public class BpmnWorkflowDefinitionValidator {
         }
 
         for (TUserTask task : tasks) {
-            errorList.addAll(validateFlowNodeIdLength(task.getId(), task.getName()));
             errorList.addAll(validateMultiInstance(task));
             errorList.addAll(validateSourceTask(process, task));
             errorList.addAll(validateTargetTask(process, task));
@@ -600,11 +577,6 @@ public class BpmnWorkflowDefinitionValidator {
             return errorList;
         }
 
-        String messageName = messageNames.get(messageRef.getLocalPart());
-        if (messageName.length() != boundaryEventTriggerIdColumnLength) {
-            errorList.add(String.format("境界イベントトリガーIDの桁数がID体系で定められた桁数と異なります。IDを修正してください。 id = [%s] name = [%s] （設定値:%s 実際:%s）",
-                    boundaryEvent.getId(), boundaryEvent.getName(), boundaryEventTriggerIdColumnLength, messageName.length()));
-        }
         return errorList;
     }
 
@@ -707,22 +679,6 @@ public class BpmnWorkflowDefinitionValidator {
                 addReachedFlowNodeIds(process, reachedFlowNodeIds, sourceFlowNodeId);
             }
         }
-    }
-
-    /**
-     * フローノードIDの桁数精査。
-     *
-     * @param flowNodeId   フローノードID
-     * @param flowNodeName フローノード名
-     * @return 精査エラーメッセージ
-     */
-    private List<String> validateFlowNodeIdLength(String flowNodeId, String flowNodeName) {
-        List<String> errorList = new ArrayList<String>();
-        if (flowNodeId.length() != flowNodeIdColumnLength) {
-            errorList.add(String.format("フローノードIDの桁数がID体系で定められた桁数と異なります。IDを修正してください。 id = [%s] name = [%s] （設定値:%s 実際:%s）",
-                    flowNodeId, flowNodeName, flowNodeIdColumnLength, flowNodeId.length()));
-        }
-        return errorList;
     }
 
     /**
@@ -837,33 +793,5 @@ public class BpmnWorkflowDefinitionValidator {
             }
         }
         return boundaryEvents;
-    }
-
-    /**
-     * レーンID桁数を設定する。
-     *
-     * @param laneIdColumnLength レーンID桁数
-     */
-    public void setLaneIdColumnLength(int laneIdColumnLength) {
-        this.laneIdColumnLength = laneIdColumnLength;
-    }
-
-    /**
-     * フローノードID桁数を設定する。
-     *
-     * @param flowNodeIdColumnLength フローノードID桁数
-     */
-    public void setFlowNodeIdColumnLength(int flowNodeIdColumnLength) {
-        this.flowNodeIdColumnLength = flowNodeIdColumnLength;
-    }
-
-    /**
-     * 境界イベントトリガーID桁数を設定する。
-     *
-     * @param boundaryEventTriggerIdColumnLength
-     *         境界イベントトリガーID桁数
-     */
-    public void setBoundaryEventTriggerIdColumnLength(int boundaryEventTriggerIdColumnLength) {
-        this.boundaryEventTriggerIdColumnLength = boundaryEventTriggerIdColumnLength;
     }
 }

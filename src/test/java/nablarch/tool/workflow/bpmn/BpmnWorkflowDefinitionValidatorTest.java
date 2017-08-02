@@ -149,28 +149,6 @@ public class BpmnWorkflowDefinitionValidatorTest {
     }
 
     /**
-     * laneタグのid属性の値が環境定義ファイルの設定値と異なる場合、精査エラーとなること。
-     *
-     * @throws Exception 想定外エラー
-     */
-    @Test
-    public void invalidTooManyLaneIdLength() throws Exception {
-        File inputFile = new File("src/test/java/nablarch/tool/workflow/bpmn/xml/validate/WP1014_tooManyLaneLength_ver1_20140804.bpmn");
-        @SuppressWarnings("unchecked")
-        JAXBElement<TDefinitions> obj = (JAXBElement<TDefinitions>) unmarshaller.unmarshal(inputFile);
-        TDefinitions tDefinitions = obj.getValue();
-        try {
-            sut.validateWorkflowDefinition(tDefinitions);
-            fail();
-        } catch (WorkflowDefinitionException e) {
-            List<String> messages = e.getMessages();
-            assertThat("laneタグのid属性の値が環境定義ファイルの設定値と異なる場合、精査エラーとなること。",
-                    messages, hasItem("レーンIDの桁数がID体系で定められた桁数と異なります。IDを修正してください。 id = [laneId10] name = [laneName10] （設定値:7 実際:8）"));
-            assertThat("期待しない精査エラーが発生していないこと。", messages.size(), is(1));
-        }
-    }
-
-    /**
      * startEventタグが子要素（EventDefinitionタグ）を持つ場合、精査エラーとなること。
      *
      * @throws Exception 想定外エラー
@@ -447,28 +425,6 @@ public class BpmnWorkflowDefinitionValidatorTest {
     }
 
     /**
-     * messageタグのname属性の値が環境定義ファイルの設定値と異なる場合、精査エラーとなること。
-     *
-     * @throws Exception 想定外エラー
-     */
-    @Test
-    public void tooManyLengthBoundaryTriggerId() throws Exception {
-        File inputFile = new File("src/test/java/nablarch/tool/workflow/bpmn/xml/validate/WP1015_tooManyLengthBoundaryTriggerId_ver1_20140804.bpmn");
-        @SuppressWarnings("unchecked")
-        JAXBElement<TDefinitions> obj = (JAXBElement<TDefinitions>) unmarshaller.unmarshal(inputFile);
-        TDefinitions tDefinitions = obj.getValue();
-        try {
-            sut.validateWorkflowDefinition(tDefinitions);
-            fail();
-        } catch (WorkflowDefinitionException e) {
-            List<String> messages = e.getMessages();
-            assertThat("messageタグのname属性の値が環境定義ファイルの設定値と異なる場合、精査エラーとなること。",
-                    messages, hasItem("境界イベントトリガーIDの桁数がID体系で定められた桁数と異なります。IDを修正してください。 id = [boundarymessage123] name = [Message] （設定値:5 実際:7）"));
-            assertThat("期待しない精査エラーが発生していないこと。", messages.size(), is(1));
-        }
-    }
-
-    /**
      * boundaryEventタグのcancelActivity属性がtrueでない場合、精査エラーとなること。
      *
      * @throws Exception 想定外エラー
@@ -598,28 +554,6 @@ public class BpmnWorkflowDefinitionValidatorTest {
             List<String> messages = e.getMessages();
             assertThat("userTaskタグのid属性の値が、targetRef属性に設定してあるsequenceFlowタグが存在しない場合、精査エラーとなること。",
                     messages, hasItem("タスクが遷移先に設定されていません。タスクに向かうようにシーケンスフローを配置してください。 id = [usertask2345678901] name = [usertask2_name]"));
-            assertThat("期待しない精査エラーが発生していないこと。", messages.size(), is(1));
-        }
-    }
-
-    /**
-     * userTaskタグのid属性の値が環境定義ファイルの設定値と異なる場合、精査エラーとなること。
-     *
-     * @throws Exception 想定外エラー
-     */
-    @Test
-    public void tooManyLengthTaskId() throws Exception {
-        File inputFile = new File("src/test/java/nablarch/tool/workflow/bpmn/xml/validate/WP1015_tooManyLengthTaskId_ver1_20140804.bpmn");
-        @SuppressWarnings("unchecked")
-        JAXBElement<TDefinitions> obj = (JAXBElement<TDefinitions>) unmarshaller.unmarshal(inputFile);
-        TDefinitions tDefinitions = obj.getValue();
-        try {
-            sut.validateWorkflowDefinition(tDefinitions);
-            fail();
-        } catch (WorkflowDefinitionException e) {
-            List<String> messages = e.getMessages();
-            assertThat("userTaskタグのid属性の値が環境定義ファイルの設定値と異なる場合、精査エラーとなること。",
-                    messages, hasItem("フローノードIDの桁数がID体系で定められた桁数と異なります。IDを修正してください。 id = [usertask12345678901] name = [User Task1] （設定値:18 実際:19）"));
             assertThat("期待しない精査エラーが発生していないこと。", messages.size(), is(1));
         }
     }

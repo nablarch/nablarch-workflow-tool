@@ -1,28 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <component-configuration xmlns="http://tis.co.jp/nablarch/component-configuration" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
                          xsi:schemaLocation="http://tis.co.jp/nablarch/component-configuration  /component-configuration.xsd">
-    <config-file file="classpath:nablarch/tool/workflow/WorkflowDefinitionGeneratorTest.config"/>
-    <import file="classpath:nablarch/tool/workflow/default-definition.xml"/>
-
-    <component name="workflowDefinitionGeneratorSettings" class="nablarch.tool.workflow.WorkflowDefinitionGeneratorSettings">
-        <property name="inputFileDir" value="${inputFileDir}"/>
-        <property name="inputFileExtensions" value="${inputFileExtension}"/>
-        <property name="outputFileDir" value="${outputFileDir}">
-        </property>
-        <property name="logFilePath" value="${logFilePath}"/>
-        <property name="workflowIdColumnLength" value="${workflowIdColumnLength}"/>
-        <property name="workflowDefinitionReader" ref="workflowDefinitionReader"/>
-        <property name="dataWriter">
-            <component class="nablarch.tool.workflow.ExcelDataWriter" />
-        </property>
-    </component>
+    <config-file file="nablarch/tool/workflow/WorkflowDefinitionGeneratorTest.config"/>
+    <import file="nablarch/tool/workflow/default-definition.xml"/>
 
     <component name="workflowDefinitionReader" class="nablarch.tool.workflow.bpmn.BpmnWorkflowDefinitionReader"/>
 
     <component name="workflowDefinitionValidator" class="nablarch.tool.workflow.bpmn.BpmnWorkflowDefinitionValidator">
-        <property name="laneIdColumnLength" value="${laneIdColumnLength}"/>
-        <property name="flowNodeIdColumnLength" value="${flowNodeIdColumnLength}"/>
-        <property name="boundaryEventTriggerIdColumnLength" value="${boundaryEventTriggerIdColumnLength}"/>
     </component>
 
     <map name="flowProceedCondition">

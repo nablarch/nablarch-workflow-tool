@@ -28,9 +28,6 @@ import org.omg.spec.bpmn._20100524.model.TTask;
 import org.omg.spec.bpmn._20100524.model.TUserTask;
 
 import nablarch.core.repository.SystemRepository;
-import nablarch.tool.workflow.WorkflowDefinitionGeneratorSequenceFlow;
-import nablarch.tool.workflow.WorkflowDefinitionGeneratorTask;
-
 import nablarch.integration.workflow.definition.BoundaryEvent;
 import nablarch.integration.workflow.definition.Event;
 import nablarch.integration.workflow.definition.Gateway;
@@ -38,6 +35,8 @@ import nablarch.integration.workflow.definition.Lane;
 import nablarch.integration.workflow.definition.SequenceFlow;
 import nablarch.integration.workflow.definition.Task;
 import nablarch.integration.workflow.definition.WorkflowDefinition;
+import nablarch.tool.workflow.WorkflowDefinitionGeneratorSequenceFlow;
+import nablarch.tool.workflow.WorkflowDefinitionGeneratorTask;
 
 /**
  * ワークフロー定義情報を変換するクラス。
@@ -164,7 +163,7 @@ public class BpmnWorkflowDefinitionConverter {
         }
 
         Map<String, String> conditionMap = SystemRepository.get(componentKey);
-        if (conditionMap.containsKey(key)) {
+        if (conditionMap != null && conditionMap.containsKey(key)) {
             condition = conditionMap.get(key) + condition.replace(key, "");
         }
         return condition;

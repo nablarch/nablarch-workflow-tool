@@ -12,13 +12,11 @@ import javax.xml.validation.SchemaFactory;
 
 import org.omg.spec.bpmn._20100524.model.TDefinitions;
 
-import nablarch.core.repository.SystemRepository;
 import nablarch.core.util.FileUtil;
+import nablarch.integration.workflow.definition.WorkflowDefinition;
 import nablarch.tool.workflow.WorkflowDefinitionException;
 import nablarch.tool.workflow.WorkflowDefinitionFile;
 import nablarch.tool.workflow.WorkflowDefinitionReader;
-
-import nablarch.integration.workflow.definition.WorkflowDefinition;
 
 /**
  * BPMN2.0に準拠したファイルからワークフロー定義情報を読み込むクラス。
@@ -55,7 +53,7 @@ public class BpmnWorkflowDefinitionReader implements WorkflowDefinitionReader {
             throw new RuntimeException(e);
         }
         TDefinitions definition = obj.getValue();
-        BpmnWorkflowDefinitionValidator validator = SystemRepository.get("workflowDefinitionValidator");
+        BpmnWorkflowDefinitionValidator validator = new BpmnWorkflowDefinitionValidator();
         validator.validateWorkflowDefinition(definition);
         return new BpmnWorkflowDefinitionConverter().convertToWorkflowDefinition(definition, definitionFile.getWorkflowId(),
                 definitionFile.getWorkflowName(), Integer.parseInt(definitionFile.getVersion()), definitionFile.getEffectiveDate());
