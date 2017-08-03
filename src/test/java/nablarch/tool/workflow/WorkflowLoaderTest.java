@@ -6,12 +6,13 @@ import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
-import org.hamcrest.beans.HasPropertyWithValue;
+import org.apache.maven.plugin.logging.SystemStreamLog;
 
 import nablarch.integration.workflow.definition.WorkflowDefinition;
 
@@ -25,7 +26,8 @@ public class WorkflowLoaderTest {
     @Test
     public void ロード出来ること() throws Exception {
         final WorkflowLoader sut = new WorkflowLoader();
-        final List<WorkflowDefinition> actual = sort(sut.load("src/test/java/nablarch/tool/workflow/bpmn/xml/read/normal"));
+        final List<WorkflowDefinition> actual = sort(
+                sut.load(new File("src/test/java/nablarch/tool/workflow/bpmn/xml/read/normal"), new SystemStreamLog()));
 
         assertThat(actual, hasSize(3));
 

@@ -7,13 +7,13 @@ import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
-import org.hamcrest.Matchers;
-import org.hamcrest.collection.IsEmptyCollection;
+import org.apache.maven.plugin.logging.SystemStreamLog;
 
 import nablarch.integration.workflow.definition.WorkflowDefinition;
 
@@ -27,7 +27,7 @@ public class StatemachineLoaderTest {
     @Test
     public void ロード出来ること() throws Exception {
         final StatemachineLoader sut = new StatemachineLoader();
-        final List<WorkflowDefinition> actual = sort(sut.load("src/test/testbpmn/statemachine/creator"));
+        final List<WorkflowDefinition> actual = sort(sut.load(new File("src/test/testbpmn/statemachine/creator"), new SystemStreamLog()));
 
         assertThat(actual, hasSize(8));         // WP0009はバリデーションエラーなので、有効なのは8
 

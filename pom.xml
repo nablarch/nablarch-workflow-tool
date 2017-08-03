@@ -7,6 +7,7 @@
   <groupId>com.nablarch.workflow</groupId>
   <artifactId>nablarch-workflow-tool</artifactId>
   <version>1.1.0</version>
+  <packaging>maven-plugin</packaging>
 
   <name>nablarch-workflow-tool</name>
   <description>Nablarch Framework.</description>
@@ -93,10 +94,49 @@
       <scope>test</scope>
     </dependency>
 
+    <dependency>
+      <groupId>com.nablarch.integration</groupId>
+      <artifactId>nablarch-slf4j-adaptor</artifactId>
+      <version>RELEASE</version>
+    </dependency>
+
+    <!-- maven plugin -->
+    <dependency>
+      <groupId>org.apache.maven</groupId>
+      <artifactId>maven-plugin-api</artifactId>
+      <version>3.2.5</version>
+    </dependency>
+
+    <dependency>
+      <groupId>org.apache.maven.plugin-tools</groupId>
+      <artifactId>maven-plugin-tools-annotations</artifactId>
+      <version>3.5</version>
+    </dependency>
+
   </dependencies>
 
   <build>
     <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-plugin-plugin</artifactId>
+        <version>3.4</version>
+        <executions>
+          <execution>
+            <id>mojo-descriptor</id>
+            <goals>
+              <goal>descriptor</goal>
+            </goals>
+          </execution>
+          <execution>
+            <id>help-goal</id>
+            <goals>
+              <goal>helpmojo</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+      
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-compiler-plugin</artifactId>
@@ -104,6 +144,15 @@
           <source>1.6</source>
           <target>1.6</target>
           <encoding>UTF-8</encoding>
+        </configuration>
+      </plugin>
+      
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-surefire-plugin</artifactId>
+        <version>2.18.1</version>
+        <configuration>
+          <argLine>-Dfile.encoding=UTF-8</argLine>
         </configuration>
       </plugin>
 

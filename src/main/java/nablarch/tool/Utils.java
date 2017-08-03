@@ -8,6 +8,8 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.apache.maven.plugin.logging.Log;
+
 import nablarch.tool.workflow.WorkflowDefinitionException;
 import nablarch.tool.workflow.WorkflowDefinitionFile;
 
@@ -27,9 +29,11 @@ public class Utils {
      * ワークフロー定義ファイル格納ディレクトリ内の、読み取り対象ワークフロー定義ファイルを取得する。
      *
      * @param inputDir ワークフロー定義ファイル格納ディレクトリ
+     * @param log logger
      * @return 読み取り対象ワークフロー定義ファイル
      */
-    public static List<WorkflowDefinitionFile> findDefinitionFiles(final File inputDir) {
+    public static List<WorkflowDefinitionFile> findDefinitionFiles(final File inputDir,
+            final Log log) {
 
         final File[] filteredFiles = inputDir.listFiles(new WorkflowDefinitionFileFilter());
         if (filteredFiles == null) {
@@ -39,7 +43,7 @@ public class Utils {
         final List<WorkflowDefinitionFile> files = new ArrayList<WorkflowDefinitionFile>();
         for (File file : filteredFiles) {
             if (file.isDirectory()) {
-                files.addAll(findDefinitionFiles(file));
+                files.addAll(findDefinitionFiles(file, log));
                 continue;
             }
 
@@ -52,7 +56,7 @@ public class Utils {
                 files.add(definitionFile);
 
             } catch (WorkflowDefinitionException e) {
-                ErrorPrinter.print(fileName, e.getMessages());
+                ErrorPrinter.print(fileName, e.getMessages(), log);
             }
         }
 

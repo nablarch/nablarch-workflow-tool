@@ -2,6 +2,8 @@ package nablarch.tool;
 
 import java.util.List;
 
+import org.apache.maven.plugin.logging.Log;
+
 /**
  * BPMNのバリデーション結果を出力するクラス。
  *
@@ -19,12 +21,13 @@ public final class ErrorPrinter {
      * エラー情報を標準エラー出力に吐き出す。
      * @param fileName ファイル名
      * @param messages ファイル名に対応したメッセージ情報
+     * @param log ロガー
      */
     @SuppressWarnings("UseOfSystemOutOrSystemErr")
-    public static void print(final String fileName, final List<String> messages) {
-        System.err.println(fileName);
+    public static void print(final String fileName, final List<String> messages, final Log log) {
+        log.error(fileName);
         for (String message : messages) {
-            System.err.println('\t' + message);
+            log.error('\t' + message);
         }
     }
 }
