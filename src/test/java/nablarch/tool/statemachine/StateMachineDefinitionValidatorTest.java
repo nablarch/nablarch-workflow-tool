@@ -23,6 +23,12 @@ public class StateMachineDefinitionValidatorTest {
     private StateMachineDefinitionValidator sut = new StateMachineDefinitionValidator();
 
     @Test
+    public void サブプロセスを持つ有効な定義の場合バリデーションエラーが発生しないこと() throws Exception {
+        final WorkflowDefinitionFile file = createWorkflowDefinitionFile("src/test/testbpmn/statemachine/validator/valid.bpmn");
+        sut.validate(file);
+    }
+
+    @Test
     public void プールが未定義の時は例外が発生すること() throws Exception {
         final WorkflowDefinitionFile file = createWorkflowDefinitionFile("src/test/testbpmn/statemachine/validator/process-nothing.bpmn");
 
@@ -393,6 +399,40 @@ public class StateMachineDefinitionValidatorTest {
         expectedException.expect(InvalidStateMachineModelException.class);
         expectedException.expectMessage("サポート対象外の要素が設定されています。 id:invalid, name:サポートされない要素");
         expectedException.expect(HasPropertyWithValue.hasProperty("messages", hasSize(1)));
+        sut.validate(file);
+    }
+
+    @Test
+    public void XORゲートウェイからのびるシーケンスに条件が設定されていない場合例外が送出されること() throws Exception {
+        final WorkflowDefinitionFile file = createWorkflowDefinitionFile(
+                "src/test/testbpmn/statemachine/validator/sequence-not-condition.bpmn");
+        
+        expectedException.expect(InvalidStateMachineModelException.class);
+        expectedException.expectMessage("ゲートウェイから伸びるシーケンスフローの場合、フロー進行条件は必須です。 id:not_condition, name:条件なし");
+        
+        sut.validate(file);
+    }
+    
+    @Test
+    public void サブプロセスのゲートウェイからのびるシーケンスに条件が設定されていない場合例外が送出されること() throws Exception {
+        final WorkflowDefinitionFile file = createWorkflowDefinitionFile(
+                "src/test/testbpmn/statemachine/validator/subprocess-sequence-not-condition.bpmn");
+
+        expectedException.expect(InvalidStateMachineModelException.class);
+        expectedException.expectMessage("ゲートウェイから伸びるシーケンスフローの場合、フロー進行条件は必須です。 id:seq1, name:NG");
+
+        sut.validate(file);
+    }
+
+    @Test
+    public void シーケンスフローの条件の記述が不正な場合例外が送出されること() throws Exception {
+        final WorkflowDefinitionFile file = createWorkflowDefinitionFile(
+                "src/test/testbpmn/statemachine/validator/sequence-invalid-condition.bpmn");
+
+        expectedException.expect(InvalidStateMachineModelException.class);
+        expectedException.expectMessage("クラス名、省略記法はピリオドで開始、終了してはいけません。入力値 = [.con1] id = [invalid1] name = [不正な条件1]");
+        expectedException.expectMessage("完全修飾名は空白を含んではいけません。パラメータが無い場合、括弧を含んではいけません。");
+        expectedException.expectMessage("入力値 = [sample.Hoge()] id = [seq1] name = [NG]");
         sut.validate(file);
     }
 

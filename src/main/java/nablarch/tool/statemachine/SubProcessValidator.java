@@ -2,6 +2,7 @@ package nablarch.tool.statemachine;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import javax.xml.bind.JAXBElement;
@@ -10,6 +11,7 @@ import org.omg.spec.bpmn._20100524.model.TBoundaryEvent;
 import org.omg.spec.bpmn._20100524.model.TEndEvent;
 import org.omg.spec.bpmn._20100524.model.TFlowElement;
 import org.omg.spec.bpmn._20100524.model.TGateway;
+import org.omg.spec.bpmn._20100524.model.TSequenceFlow;
 import org.omg.spec.bpmn._20100524.model.TStartEvent;
 import org.omg.spec.bpmn._20100524.model.TSubProcess;
 import org.omg.spec.bpmn._20100524.model.TTask;
@@ -55,7 +57,7 @@ public class SubProcessValidator implements Validator {
                 new EndEventValidatorInSubProcess(subProcess, getEndEvent()),
                 new TaskValidatorInSubProcess(subProcess, getTask(), getBoundaryEvent()),
                 new BoundaryEventValidator(getBoundaryEvent()),
-                new GatewayValidator(getGateway()),
+                new GatewayValidator(getGateway(), getSequenceFlowList()),
                 FlowElementValidator.create(subProcess)
         );
     }
@@ -142,6 +144,20 @@ public class SubProcessValidator implements Validator {
             }
         }
         return gateways;
+    }
+    
+    /**
+     * シーケンスフローのリストを取得する。
+     * @return シーケンスフローのリスト
+     */
+    private List<TSequenceFlow> getSequenceFlowList() {
+        final List<TSequenceFlow> flows = new ArrayList<TSequenceFlow>();
+        for (final JAXBElement<? extends TFlowElement> element : subProcess.getFlowElement()) {
+            if (element.getValue() instanceof TSequenceFlow) {
+                flows.add((TSequenceFlow) element.getValue());
+            }
+        }
+        return flows;
     }
 
     /**

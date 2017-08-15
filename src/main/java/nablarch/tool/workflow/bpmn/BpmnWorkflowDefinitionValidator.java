@@ -4,8 +4,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import javax.xml.bind.JAXBElement;
 import javax.xml.namespace.QName;
@@ -32,6 +30,7 @@ import org.omg.spec.bpmn._20100524.model.TTerminateEventDefinition;
 import org.omg.spec.bpmn._20100524.model.TUserTask;
 
 import nablarch.core.util.StringUtil;
+import nablarch.tool.Utils;
 import nablarch.tool.workflow.WorkflowDefinitionException;
 
 /**
@@ -43,11 +42,6 @@ import nablarch.tool.workflow.WorkflowDefinitionException;
  */
 public class BpmnWorkflowDefinitionValidator {
 
-
-    /**
-     * フロー進行条件、完了条件のクラス名、パラメータ抽出用正規表現。
-     */
-    private static final Pattern CONDITION_PATTERN = Pattern.compile("([^　\\s\\(]+)(?:\\(([^\\)]+)\\))?");
 
     /**
      * ワークフロー定義情報がワークフローエンジン機能の制約に準拠しているか精査を行う。
@@ -214,63 +208,8 @@ public class BpmnWorkflowDefinitionValidator {
             errorList.add(String.format("マルチインスタンス・アクティビティの完了条件は必須です。[Completion condition]を設定してください。 id = [%s] name = [%s]", flowNodeId, flowNodeName));
         } else {
             String condition = completionCondition.getContent().get(0).toString();
-            errorList.addAll(validateConditionFormat(condition, flowNodeId, flowNodeName));
+            errorList.addAll(Utils.validateConditionFormat(condition, flowNodeId, flowNodeName));
         }
-        return errorList;
-    }
-
-    /**
-     * フロー進行条件、完了条件の入力値に対し、フォーマット精査を行う。
-     * 入力値に対し、以下の精査を行う。
-     * <pre>
-     *     クラス名（省略記法） + (パラメータ1, パラメータ2, ....)の形式であること。※パラメータが無い場合、括弧を書かないこと
-     *     クラス名（省略記法）部分に、空白文字（全角空白を含む）を含まないこと。
-     *     クラス名（省略記法）部分が、.（ピリオド）で開始、終了していないこと。
-     *     クラス名（省略記法）部分に、連続する.（ピリオド）を含まないこと。
-     *     空白文字のみのパラメータが指定されていないこと。
-     *
-     *     例）
-     *     "Condition" ※パラメータが無い場合、括弧は不要
-     *     "test.Condition(param , 1)" ※ピリオドを含む場合、ピリオド区切りであること
-     *     "Condition( param , 1 )" ※括弧内の半角スペースは許容する
-     * </pre>
-     *
-     * @param condition フロー進行条件または完了条件
-     * @param id        シーケンスフローIDまたはフローノードID
-     * @param name      シーケンスフロー名またはフローノード名
-     * @return 精査エラーメッセージ
-     */
-    private List<String> validateConditionFormat(String condition, String id, String name) {
-        List<String> errorList = new ArrayList<String>();
-
-        Matcher matcher;
-        matcher = CONDITION_PATTERN.matcher(condition);
-        if (!matcher.matches()) {
-            errorList.add(String.format("条件の形式が不正です。「完全修飾名(パラメータ1, パラメータ2, ....)」の形式で入力してください。"
-                    + "完全修飾名は空白を含んではいけません。パラメータが無い場合、括弧を含んではいけません。"
-                    + "完全修飾名の代わりに、あらかじめ登録された省略記法を利用することも出来ます。入力値 = [%s] id = [%s] name = [%s]", condition, id, name));
-            return errorList;
-        }
-
-        String className = matcher.group(1);
-        if (className.startsWith(".") || className.endsWith(".")) {
-            errorList.add(String.format("クラス名、省略記法はピリオドで開始、終了してはいけません。入力値 = [%s] id = [%s] name = [%s]", condition, id, name));
-        }
-        if (className.contains("..")) {
-            errorList.add(String.format("クラス名、省略記法は連続したピリオドを含んではいけません。入力値 = [%s] id = [%s] name = [%s]", condition, id, name));
-        }
-
-        String params = matcher.group(2);
-        if (params == null) {
-            return errorList;
-        }
-        for (String param : params.split(",", -1)) {
-            if (StringUtil.isNullOrEmpty(param.trim())) {
-                errorList.add(String.format("空文字となるパラメータを含んではいけません。入力値 = [%s] id = [%s] name = [%s]", condition, id, name));
-                return errorList;
-            }
-        }
-
         return errorList;
     }
 
@@ -489,7 +428,7 @@ public class BpmnWorkflowDefinitionValidator {
                 errorList.add(String.format("ゲートウェイから伸びるシーケンスフローの場合、フロー進行条件は必須です。[条件]を設定してください。 id = [%s] name = [%s]", sequenceFlowId, sequenceFlowName));
             } else {
                 String condition = conditionExpression.getContent().get(0).toString();
-                errorList.addAll(validateConditionFormat(condition, sequenceFlowId, sequenceFlowName));
+                errorList.addAll(Utils.validateConditionFormat(condition, sequenceFlowId, sequenceFlowName));
             }
         }
         return errorList;

@@ -11,6 +11,7 @@ import org.omg.spec.bpmn._20100524.model.TEndEvent;
 import org.omg.spec.bpmn._20100524.model.TFlowElement;
 import org.omg.spec.bpmn._20100524.model.TGateway;
 import org.omg.spec.bpmn._20100524.model.TProcess;
+import org.omg.spec.bpmn._20100524.model.TSequenceFlow;
 import org.omg.spec.bpmn._20100524.model.TStartEvent;
 import org.omg.spec.bpmn._20100524.model.TSubProcess;
 import org.omg.spec.bpmn._20100524.model.TTask;
@@ -51,7 +52,7 @@ public class ParentProcessValidator implements Validator {
                 new EndEventValidator(getEndEvent()),
                 new TaskValidator(getTask(), getBoundaryEvent()),
                 new BoundaryEventValidator(getBoundaryEvent()),
-                new GatewayValidator(getGateway()),
+                new GatewayValidator(getGateway(), getSequenceFlowList()),
                 FlowElementValidator.create(process)
         );
     }
@@ -138,6 +139,20 @@ public class ParentProcessValidator implements Validator {
             }
         }
         return gateways;
+    }
+
+    /**
+     * シーケンスフローのリストを取得する。
+     * @return シーケンスフローのリスト
+     */
+    private List<TSequenceFlow> getSequenceFlowList() {
+        final List<TSequenceFlow> flows = new ArrayList<TSequenceFlow>();
+        for (final JAXBElement<? extends TFlowElement> element : process.getFlowElement()) {
+            if (element.getValue() instanceof TSequenceFlow) {
+                flows.add((TSequenceFlow) element.getValue());
+            }
+        }
+        return flows;
     }
     
 }
