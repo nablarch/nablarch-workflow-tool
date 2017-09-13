@@ -45,7 +45,7 @@ public class GenerateCsvMojo extends AbstractMojo {
     @Override
     public void execute() throws MojoExecutionException, MojoFailureException {
         final Log log = getLog();
-        if (!outputPath.exists() && outputPath.mkdirs()) {
+        if (!outputPath.exists() && !outputPath.mkdirs()) {
             log.error("出力先ディレクトリが作成出来ません。");
             throw new MojoFailureException("出力先ディレクトリの作成に失敗しました。");
         }
