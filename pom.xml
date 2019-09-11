@@ -23,6 +23,12 @@
   
   <profiles>
     <profile>
+      <id>ci</id>
+      <properties>
+        <junit.additionalArgLine>-Djava.awt.headless=true</junit.additionalArgLine>
+      </properties>
+    </profile>
+    <profile>
       <id>java11</id>
       <dependencies>
         <dependency>
